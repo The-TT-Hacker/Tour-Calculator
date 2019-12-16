@@ -10,7 +10,7 @@ from calculator import calculate_region_tour_num_tournaments
 
 from datetime import datetime
 
-NUM_TOURNAMENTS = 2
+NUM_TOURNAMENTS = 5
 
 tournaments = [
 	{"name": "Sydney Open",     "lat": -33.854980, "lon": 151.072281, "start_date": datetime(2020, 1, 1), "end_date": datetime(2020, 1, 4)},
@@ -25,6 +25,6 @@ if __name__ == "__main__":
 
 	print(graph)
 
-	#tour = calculate_region_tour_num_tournaments(graph, NUM_TOURNAMENTS)
+	tour = calculate_region_tour_num_tournaments(graph, NUM_TOURNAMENTS)
 
-	#print(tour)
+	print(tour)
