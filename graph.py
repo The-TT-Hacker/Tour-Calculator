@@ -1,4 +1,5 @@
 from math import radians, cos, sin, asin, sqrt
+import copy
 
 def haversine(lon1, lat1, lon2, lat2):
     """
@@ -89,7 +90,8 @@ class Tour:
     self.nodes.append(node)
     self.weight += weight
 
-    return self
+  def copy(self):
+  	return copy.deepcopy(self)
 
   def __str__(self):
     string = "Tour:\n"
