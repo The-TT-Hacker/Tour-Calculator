@@ -39,21 +39,23 @@ class Graph:
 			j = i + 1
 
 			for child_node in self.nodes[i + 1:]:
-				
-				distance = haversine(tournaments[i]["lon"], tournaments[i]["lat"], tournaments[j]["lon"], tournaments[j]["lat"])
 
-				node.add_edge(child_node, distance)
+				if child_node.start_date > node.end_date:
+				
+					distance = haversine(tournaments[i]["lon"], tournaments[i]["lat"], tournaments[j]["lon"], tournaments[j]["lat"])
+
+					node.add_edge(child_node, distance)
 
 				j += 1
 
 	def __str__(self):
-		string = ""
+		string = "Graph:\n"
 
 		for node in self.nodes:
-			string += node.name + "\n"
+			string += "\t" + node.name + "\n"
 
 			for edge in node.edges:
-				string += "\t" + edge.node.name
+				string += "\t\t" + edge.node.name + "\n"
 
 			string += "\n"
 
@@ -77,6 +79,25 @@ class Edge:
 	def __init__(self, node, weight):
 		self.node   = node
 		self.weight = weight
+
+class Tour:
+  def __init__(self, node, weight):
+    self.nodes = [node]
+    self.weight = weight
+
+  def add_node(self, node, weight):
+    self.nodes.append(node)
+    self.weight += weight
+
+    return self
+
+  def __str__(self):
+    string = "Tour:\n"
+
+    for node in self.nodes:
+            string += "\t" + node.name + "\n"
+
+    return string
 
 """
 Assumes tournaments are in chronological order

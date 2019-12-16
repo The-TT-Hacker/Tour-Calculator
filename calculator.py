@@ -1,4 +1,5 @@
 import copy
+from graph import Tour
 
 """
 Given a tournaments graph and number of tournaments,
@@ -6,29 +7,7 @@ return the path with the shortest distance and
 the number of tournaments specified
 """
 
-class Tour:
-        def __init__(self, node, weight):
-                self.nodes = [node]
-                self.weight = weight
-
-        def add_node(self, node, weight):
-                self.nodes.append(node)
-                self.weight += weight
-
-                return self
-
-        def __str__(self):
-                string = "Tour:\n"
-
-                for node in self.nodes:
-                        string += node.name + "\n"
-
-                return string
-
-
 def calculate_region_tour_num_tournaments(graph, num_tournaments):
-        #TODO STAGE 1
-
         tours_list = []
 
         # Initialise nested lists
@@ -43,13 +22,13 @@ def calculate_region_tour_num_tournaments(graph, num_tournaments):
         for i in range(num_tournaments - 1):
                 for tour in tours_list[i]:
                         for edge in tour.nodes[i].edges:
-                                tours_list[i+1].append(tour.add_node(edge.node, edge.weight))
+                                tours_list[i+1].append(copy.deepcopy(tour).add_node(edge.node, edge.weight))
                 
 
                 
         # Get best tour
         tour = select_tour_least_distance(tours_list, num_tournaments)
-	
+
         return tour
 
 def calculate_region_tour_max_tournaments(graph):
@@ -82,10 +61,9 @@ def select_tour_least_distance(tours_list, num_tournaments):
         best_tour = None
         lowest_weight = float("inf")
 
-        print (tours_list[num_tournaments - 1])
-
         for tour in tours_list[num_tournaments - 1]:
                 if tour.weight < lowest_weight:
                         best_tour = tour
+                        lowest_weight = tour.weight
 
         return best_tour
