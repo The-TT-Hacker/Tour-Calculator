@@ -1,23 +1,5 @@
-from math import radians, cos, sin, asin, sqrt
-import copy
-
-def haversine(lon1, lat1, lon2, lat2):
-    """
-    Calculate the great circle distance between two points 
-    on the earth (specified in decimal degrees)
-    """
-    # convert decimal degrees to radians 
-    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-
-    # haversine formula 
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-
-    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-    c = 2 * asin(sqrt(a)) 
-    r = 6371 # Radius of earth in kilometers
-
-    return c * r
+from functions import haversine
+from copy      import deepcopy
 
 class Graph:
 	def __init__(self):
@@ -26,7 +8,7 @@ class Graph:
 	def add_node(self, tournament):
 		edges = []
 
-		node = Node(tournament["name"], tournament["start_date"], tournament["end_date"], edges)
+		node = Node(tournament["name"], tournament["start_date"], tournament["end_date"], tournament["lat"], tournament["lon"], edges)
 
 		self.nodes.append(node)
 
@@ -63,10 +45,12 @@ class Graph:
 		return string
 
 class Node:
-	def __init__(self, name, start_date, end_date, edges):
+	def __init__(self, name, start_date, end_date, lat, lon, edges):
 		self.name       = name
 		self.start_date = start_date
 		self.end_date   = end_date
+		self.lat        = lat
+		self.lon        = lon
 
 		# Only nodes with events that occur after
 		self.edges = edges
@@ -82,22 +66,26 @@ class Edge:
 		self.weight = weight
 
 class Tour:
-  def __init__(self, node, weight):
-    self.nodes = [node]
-    self.weight = weight
+  def __init__(self, node, initial_weight):
+    self.nodes  = [node]
+    self.weight = initial_weight
+    self.string = "Home - " + str(initial_weight) + " - " + node.name
 
   def add_node(self, node, weight):
     self.nodes.append(node)
     self.weight += weight
+    self.string += " - " + str(weight) + " - " + node.name 
 
   def copy(self):
-  	return copy.deepcopy(self)
+  	return deepcopy(self)
 
   def __str__(self):
     string = "Tour:\n"
+    string += "Weight: " + str(self.weight) + "\n"
+    string += "Path: " + self.string + "\n"
 
     for node in self.nodes:
-            string += "\t" + node.name + "\n"
+      string += "\t" + node.name + "\n"
 
     return string
 
