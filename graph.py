@@ -1,6 +1,18 @@
 from functions import haversine
 from copy      import deepcopy
 
+"""
+Assumptions
+===========
+
+Tournaments list is sorted chronologically on start_date
+
+Graph Structure
+===============
+
+A node's edges contain all child_nodes where child_node.start_date > node.end_date
+"""
+
 class Graph:
 	def __init__(self):
 		self.nodes = []
@@ -17,7 +29,7 @@ class Graph:
 			if node.name == tournament["name"] and node.start_date == tournament["start_date"]:
 				return node
 
-	def add_distance_edges(self, tournaments):
+	def add_region_distance_edges(self, tournaments):
 		for i, node in enumerate(self.nodes):
 			j = i + 1
 
@@ -26,6 +38,20 @@ class Graph:
 				if child_node.start_date > node.end_date:
 				
 					distance = haversine(tournaments[i]["lon"], tournaments[i]["lat"], tournaments[j]["lon"], tournaments[j]["lat"])
+
+					node.add_edge(child_node, distance)
+
+				j += 1
+
+	def add_return_home_distance_edges(self, tournaments, home):
+		for i, node in enumerate(self.nodes):
+			j = i + 1
+
+			for child_node in self.nodes[i + 1:]:
+
+				if child_node.start_date > node.end_date:
+				
+					distance = haversine(home["lon"], home["lat"], tournaments[j]["lon"], tournaments[j]["lat"])
 
 					node.add_edge(child_node, distance)
 
@@ -89,20 +115,34 @@ class Tour:
 
     return string
 
-"""
-Assumes tournaments are in chronological order
-"""
+# Build graph with edge weights = distance between the node and child node
 
-def build_graph(tournaments):
+def build_region_graph(tournaments):
 
 	graph = Graph()
 
 	for tournament in tournaments:
 		graph.add_node(tournament)
 
-	graph.add_distance_edges(tournaments)
+	graph.add_region_distance_edges(tournaments)
 
 	return graph
+
+# Build graph with edge weights = distance between the home and child node
+
+def build_return_home_graph(tournaments):
+
+	graph = Graph()
+
+	for tournament in tournaments:
+		graph.add_node(tournament)
+
+	graph.add_return_home_distance_edges(tournaments)
+
+	return graph
+
+def build_point_to_point_graph():
+	pass
 
 if __name__ == "__main__":
 	pass

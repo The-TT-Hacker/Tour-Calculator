@@ -17,3 +17,17 @@ def haversine(lon1, lat1, lon2, lat2):
     r = 6371 # Radius of earth in kilometers
 
     return c * r
+
+# Given a list of all possible tours, return the one with shortest travel distance
+def get_minimum_tour(prev_tours):
+
+  # Find the tour with the lowest collective weight
+  best_tour     = None
+  lowest_weight = float("inf")
+
+  for tour in prev_tours:
+    if tour.weight < lowest_weight:
+      best_tour     = tour
+      lowest_weight = tour.weight
+
+  return best_tour
