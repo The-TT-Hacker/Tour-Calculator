@@ -5,27 +5,26 @@
 #include <list>
 
 using v8::Context;
-using v8::Function;
 using v8::FunctionCallbackInfo;
 using v8::Isolate;
 using v8::Local;
-using v8::NewStringType;
+
+using v8::Function;
 using v8::Object;
 using v8::String;
 using v8::Value;
 using v8::Number;
-using v8::Exception;
 using v8::Array;
 using v8::Integer;
 
 TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array);
-void            build_tour_array(Isolate* isolate, Tour* tour, Local<Array> best_tour);
+Local<Array>    build_tour_array(Isolate* isolate, Tour* tour);
 
-// Tour Calculator Warappers
+// Tour Calculator Wrappers
 
 void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackInfo<Value>& args) {
 
-	// Preamble
+	// Preamble - JS Environment
 
   Isolate*        isolate = args.GetIsolate();
   Local<Context>  context = isolate->GetCurrentContext();
@@ -39,18 +38,12 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
 
   TourCalculator* tourcalculator = build_tour_calculator(isolate, array);
 	Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments();
-
-	// Build JS Array
-
-	Local<Array> best_tour = Array::New(isolate);
-
-	build_tour_array(isolate, tour, best_tour);
+	Local<Array>    best_tour      = build_tour_array(isolate, tour);
 
 	// Run Callback 
 
-  const unsigned argc = 1;
-
-  Local<Value> argv[argc] = { best_tour };
+  const unsigned argc       = 1;
+  Local<Value>   argv[argc] = { best_tour };
   
   cb->Call(context, Null(isolate), argc, argv);
 
@@ -58,35 +51,28 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
 
 void calculate_region_tour_min_distance_num_tournaments(const FunctionCallbackInfo<Value>& args) {
 
-	// Preamble
+	// Preamble - JS Environment
 
   Isolate*        isolate = args.GetIsolate();
   Local<Context>  context = isolate->GetCurrentContext();
 
-  // Arguments
+  // JS Arguments
 
   Local<Array>    array = Local<Array>::Cast(args[0]);
   Local<Integer>  num   = Local<Integer>::Cast(args[1]);
   Local<Function> cb    = Local<Function>::Cast(args[2]);
 
-	int num_tournaments = num->NumberValue();
-
   // Calculate Tour
 
-  TourCalculator* tourcalculator = build_tour_calculator(isolate, array);
-	Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments);
-
-	// Build JS Array
-
-	Local<Array> best_tour = Array::New(isolate);
-
-	build_tour_array(isolate, tour, best_tour);
+  int             num_tournaments = num->NumberValue();
+  TourCalculator* tourcalculator  = build_tour_calculator(isolate, array);
+	Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments);
+	Local<Array>    best_tour       = build_tour_array(isolate, tour);
 
 	// Run Callback 
 
-  const unsigned argc = 1;
-
-  Local<Value> argv[argc] = { best_tour };
+  const unsigned argc       = 1;
+  Local<Value>   argv[argc] = { best_tour };
   
   cb->Call(context, Null(isolate), argc, argv);
 
@@ -177,7 +163,9 @@ best_tour = [
 
 */
 
-void build_tour_array(Isolate* isolate, Tour* tour, Local<Array> best_tour) {
+Local<Array> build_tour_array(Isolate* isolate, Tour* tour) {
+
+	Local<Array> best_tour = Array::New(isolate);
 
 	std::list<Node*>::iterator it;
 
@@ -200,5 +188,7 @@ void build_tour_array(Isolate* isolate, Tour* tour, Local<Array> best_tour) {
   	++i;
 
 	}
+
+	return best_tour;
 
 }

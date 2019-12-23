@@ -1,0 +1,24 @@
+{
+  "name": "tour-calculator",
+  "version": "1.0.0",
+  "description": "Calculate the ideal set of tournaments for a player",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The-TT-Hacker/Tour-Calculator.git"
+  },
+  "author": "Tim Thacker",
+  "license": "ISC",
+  "gypfile": true,
+  "bugs": {
+    "url": "https://github.com/The-TT-Hacker/Tour-Calculator/issues"
+  },
+  "homepage": "https://github.com/The-TT-Hacker/Tour-Calculator#readme",
+  "dependencies": {
+    "node-gyp": "^5.0.7"
+  }
+}
