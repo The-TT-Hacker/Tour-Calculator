@@ -1,8 +1,8 @@
 #ifndef TOURCALCULATOR_H
 #define TOURCALCULATOR_H
 
-#include "tournament.h"
-#include "graph.h"
+#include "Tournament.h"
+#include "Graph.h"
 
 #include <list>
 #include <string>
@@ -45,7 +45,6 @@ class TourCalculator {
 		void  initialise_tours_list(std::list<Tour*> *tours);
 		void  get_next_tour_iteration(std::list<Tour*> *prev_tours, std::list<Tour*> *curr_tours);
 		Tour* get_minimum_tour(std::list<Tour*> tours);
-
 
 };
 

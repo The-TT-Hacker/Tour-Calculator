@@ -1,7 +1,7 @@
-#include "tourcalculator.h"
+#include "TourCalculator.h"
 
-#include "tournament.h"
-#include "graph.h"
+#include "Tournament.h"
+#include "Graph.h"
 
 #include <iostream>
 #include <list>
@@ -46,8 +46,8 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
 
   build_region_graph();
 
-  std::list<Tour*> prev_tours;
-  std::list<Tour*> curr_tours;
+  std::list<Tour*> prev_tours; // tours of length n
+  std::list<Tour*> curr_tours; // tours of length n + 1
 
   // Add all the tournaments as potential start tournaments
 
@@ -74,7 +74,7 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
 
   Tour *best_tour = get_minimum_tour(prev_tours);
 
-  print_tours_list(&prev_tours);
+  //print_tours_list(&prev_tours);
 
   return best_tour;
 
@@ -108,8 +108,8 @@ Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments() {
 
   build_region_graph();
 
-  std::list<Tour*> prev_tours;
-  std::list<Tour*> curr_tours;
+  std::list<Tour*> prev_tours; // tours of length n
+  std::list<Tour*> curr_tours; // tours of length n + 1
 
   // Add all the tournaments as potential start tournaments
 
@@ -136,7 +136,7 @@ Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments() {
 
   Tour *best_tour = get_minimum_tour(prev_tours);
 
-  print_tours_list(&prev_tours);
+  //print_tours_list(&prev_tours);
 
   return best_tour;
 

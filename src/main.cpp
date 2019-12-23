@@ -1,5 +1,5 @@
-#include "tourcalculator.h"
-#include "graph.h"
+#include "TourCalculator.h"
+#include "Graph.h"
 
 #include <iostream>
 
