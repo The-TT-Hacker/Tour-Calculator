@@ -84,10 +84,10 @@ INCS_Release := \
 	-I/home/thetthacker/.cache/node-gyp/10.16.3/deps/v8/include
 
 OBJS := \
-	$(obj).target/$(TARGET)/src/TourCalculatorAddon.o \
-	$(obj).target/$(TARGET)/src/TourCalculator.o \
-	$(obj).target/$(TARGET)/src/Tournament.o \
-	$(obj).target/$(TARGET)/src/Graph.o
+	$(obj).target/$(TARGET)/src/tourcalculatoraddon.o \
+	$(obj).target/$(TARGET)/src/tourcalculator.o \
+	$(obj).target/$(TARGET)/src/tournament.o \
+	$(obj).target/$(TARGET)/src/graph.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)

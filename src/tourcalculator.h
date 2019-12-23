@@ -1,8 +1,8 @@
 #ifndef TOURCALCULATOR_H
 #define TOURCALCULATOR_H
 
-#include "Tournament.h"
-#include "Graph.h"
+#include "tournament.h"
+#include "graph.h"
 
 #include <list>
 #include <string>

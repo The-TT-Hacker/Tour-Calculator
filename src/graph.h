@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "Tournament.h"
+#include "tournament.h"
 
 #include <list>
 #include <string>
