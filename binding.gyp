@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "tourcalculator",
-      "sources": [ "src/TourCalculatorAddon.cpp", "src/TourCalculator.cpp", "src/Tournament.cpp", "src/Graph.cpp" ]
+      "sources": [ "src/tourcalculatoraddon.cpp", "src/tourcalculator.cpp", "src/tournament.cpp", "src/graph.cpp" ]
     }
   ]
 }

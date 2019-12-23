@@ -1,7 +1,4 @@
-#include "TourCalculator.h"
-
-#include "Tournament.h"
-#include "Graph.h"
+#include "tourcalculator.h"
 
 #include <iostream>
 #include <list>

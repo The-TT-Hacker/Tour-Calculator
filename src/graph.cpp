@@ -1,10 +1,6 @@
-#include "Graph.h"
-
-#include "Tournament.h"
-#include "TourCalculator.h"
+#include "graph.h"
 
 #include <iterator>
-
 #include <math.h>
 #include <cmath>
 #include <cstring>

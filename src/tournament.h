@@ -3,6 +3,9 @@
 
 #include <string>
 
+class Tournament;
+class Home;
+
 // Tournament
 
 class Tournament {
