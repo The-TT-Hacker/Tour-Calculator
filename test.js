@@ -11,7 +11,7 @@ var tournaments = [
 ];
 
 tourcalculator.calculate_region_tour_min_distance_max_tournaments(tournaments, function (tour) {
-  //console.log(tour);
+  console.log(tour);
 });
 
 tourcalculator.calculate_region_tour_min_distance_num_tournaments(tournaments, num_tournaments, function (tour) {
