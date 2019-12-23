@@ -1,3 +1,26 @@
+Node.js Addon Version
+=====================
+
+Compile:
+
+node-gyp rebuild
+
+Run:
+
+node test.js
+
+Command Line Version
+====================
+
+Compile:
+
+cd src
+g++ main.cpp tourcalculator.cpp graph.cpp tournament.cpp -o calc
+
+Run:
+
+./calc
+
 # Tour-Calculator
 Algorithm to calcuate the ideal events someone should participate in
 

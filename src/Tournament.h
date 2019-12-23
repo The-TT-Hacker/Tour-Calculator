@@ -20,4 +20,17 @@ class Tournament {
 
 };
 
+// Home
+
+class Home {
+
+  public:
+
+		double lat;
+		double lon;
+
+		Home(double lat, double lon);
+
+};
+
 #endif

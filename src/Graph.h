@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "tournament.h"
+#include "Tournament.h"
 
 #include <list>
 #include <string>
@@ -15,7 +15,7 @@ class Edge;
 class Graph {
 
 	public:
-		std::list<Node *> nodes;
+		std::list<Node*> nodes;
 
 		void add_node(Tournament *tournament);
 		//void find_node();

@@ -1,7 +1,7 @@
-#include "graph.h"
+#include "Graph.h"
 
-#include "tournament.h"
-#include "tourcalculator.h"
+#include "Tournament.h"
+#include "TourCalculator.h"
 
 #include <iterator>
 
