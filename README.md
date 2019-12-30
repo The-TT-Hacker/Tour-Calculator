@@ -1,8 +1,15 @@
+Dependencies
+============
+
+Node.js
+npm
+
 Node.js Addon Version
 =====================
 
 Compile:
 
+npm install
 node-gyp rebuild
 
 Run:

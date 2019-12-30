@@ -1,6 +1,11 @@
 const tourcalculator = require('./build/Release/tourcalculator');
 
-var num_tournaments = 5;
+var num_tournaments = 3;
+
+var home = {
+	lat: -33.868839,
+	lon: 151.208936
+}
 
 var tournaments = [
 	{ "name": "Wimbledon",  lat: 51.433558,  lon: -0.215512,  start_date: "01/01/2020", end_date: "02/01/2020" },
@@ -11,9 +16,21 @@ var tournaments = [
 ];
 
 tourcalculator.calculate_region_tour_min_distance_max_tournaments(tournaments, function (tour) {
+	console.log("calculate_region_tour_min_distance_max_tournaments");
+  console.log(tour);
+});
+/*
+tourcalculator.calculate_region_tour_min_distance_num_tournaments(tournaments, num_tournaments, function (tour) {
+	console.log("calculate_region_tour_min_distance_num_tournaments");
   console.log(tour);
 });
 
-tourcalculator.calculate_region_tour_min_distance_num_tournaments(tournaments, num_tournaments, function (tour) {
+tourcalculator.calculate_region_tour_min_distance_max_tournaments_from_home(tournaments, home, function (tour) {
+	console.log("calculate_region_tour_min_distance_max_tournaments_from_home");
   console.log(tour);
 });
+
+tourcalculator.calculate_region_tour_min_distance_num_tournaments_from_home(tournaments, num_tournaments, home, function (tour) {
+	console.log("calculate_region_tour_min_distance_num_tournaments_from_home");
+  console.log(tour);
+});*/

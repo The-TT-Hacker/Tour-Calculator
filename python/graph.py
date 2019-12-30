@@ -115,14 +115,24 @@ class Tour:
 
     return string
 
-# Build graph with edge weights = distance between the node and child node
+# Helper Functions
 
-def build_region_graph(tournaments):
+# 
+
+def initiate_tournaments_graph(graph, tournaments):
 
 	graph = Graph()
 
 	for tournament in tournaments:
 		graph.add_node(tournament)
+
+	return graph
+
+# Build graph with edge weights = distance between the node and child node
+
+def build_region_graph(tournaments):
+
+	graph = add_nodes(graph, tournaments)
 
 	graph.add_region_distance_edges(tournaments)
 
@@ -132,10 +142,7 @@ def build_region_graph(tournaments):
 
 def build_return_home_graph(tournaments):
 
-	graph = Graph()
-
-	for tournament in tournaments:
-		graph.add_node(tournament)
+	graph = add_nodes(graph, tournaments)
 
 	graph.add_return_home_distance_edges(tournaments)
 

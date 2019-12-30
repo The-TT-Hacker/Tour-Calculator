@@ -1,4 +1,5 @@
 #include "tourcalculator.h"
+#include "functions.h"
 
 #include <node.h>
 #include <iostream>
@@ -17,7 +18,7 @@ using v8::Number;
 using v8::Array;
 using v8::Integer;
 
-TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array);
+TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array, double home_lat = NULL, double home_lon = NULL);
 Local<Array>    build_tour_array(Isolate* isolate, Tour* tour);
 
 // Tour Calculator Wrappers
@@ -29,7 +30,7 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
   Isolate*        isolate = args.GetIsolate();
   Local<Context>  context = isolate->GetCurrentContext();
 
-  // Arguments
+  // JS Arguments
 
   Local<Array>    array = Local<Array>::Cast(args[0]);
   Local<Function> cb    = Local<Function>::Cast(args[1]);
@@ -37,8 +38,11 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
   // Calculate Tour
 
   TourCalculator* tourcalculator = build_tour_calculator(isolate, array);
+  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
 	Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments();
 	Local<Array>    best_tour      = build_tour_array(isolate, tour);
+
+  print_tour(tour);
 
 	// Run Callback 
 
@@ -66,10 +70,93 @@ void calculate_region_tour_min_distance_num_tournaments(const FunctionCallbackIn
 
   int             num_tournaments = num->NumberValue();
   TourCalculator* tourcalculator  = build_tour_calculator(isolate, array);
+  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
 	Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments);
 	Local<Array>    best_tour       = build_tour_array(isolate, tour);
 
+  print_tour(tour);
+
 	// Run Callback 
+
+  const unsigned argc       = 1;
+  Local<Value>   argv[argc] = { best_tour };
+  
+  cb->Call(context, Null(isolate), argc, argv);
+
+}
+
+void calculate_region_tour_min_distance_max_tournaments_from_home(const FunctionCallbackInfo<Value>& args) {
+
+  // Preamble - JS Environment
+
+  Isolate*        isolate = args.GetIsolate();
+  Local<Context>  context = isolate->GetCurrentContext();
+
+  // JS Arguments
+
+  Local<Array>    array    = Local<Array>::Cast(args[0]);
+  Local<Object>   home_obj = Local<Object>::Cast(args[1]);
+  Local<Function> cb       = Local<Function>::Cast(args[2]);
+
+  Local<Value> home_lat_val = home_obj->Get(String::NewFromUtf8(isolate, "lat"));
+  double       home_lat     = home_lat_val->NumberValue();
+
+  Local<Value> home_lon_val = home_obj->Get(String::NewFromUtf8(isolate, "lon"));
+  double       home_lon     = home_lat_val->NumberValue();
+
+  // Calculate Tour
+
+  TourCalculator* tourcalculator = build_tour_calculator(isolate, array, home_lat, home_lon);
+  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
+  Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments(true);
+  Local<Array>    best_tour      = build_tour_array(isolate, tour);
+
+  print_tour(tour);
+
+  // Run Callback 
+
+  const unsigned argc       = 1;
+  Local<Value>   argv[argc] = { best_tour };
+  
+  cb->Call(context, Null(isolate), argc, argv);
+
+}
+
+void calculate_region_tour_min_distance_num_tournaments_from_home(const FunctionCallbackInfo<Value>& args) {
+
+  // Preamble - JS Environment
+
+  Isolate*        isolate = args.GetIsolate();
+  Local<Context>  context = isolate->GetCurrentContext();
+
+  // JS Arguments
+
+  Local<Array>    array    = Local<Array>::Cast(args[0]);
+  Local<Integer>  num      = Local<Integer>::Cast(args[1]);
+  Local<Object>   home_obj = Local<Object>::Cast(args[2]);
+  Local<Function> cb       = Local<Function>::Cast(args[3]);
+
+  Local<Value> home_lat_val = home_obj->Get(String::NewFromUtf8(isolate, "lat"));
+  double       home_lat     = home_lat_val->NumberValue();
+
+  Local<Value> home_lon_val = home_obj->Get(String::NewFromUtf8(isolate, "lon"));
+  double       home_lon     = home_lat_val->NumberValue();
+
+  // Calculate Tour
+
+  int             num_tournaments = num->NumberValue();
+  TourCalculator* tourcalculator  = build_tour_calculator(isolate, array, home_lat, home_lon);
+
+  std::cout << "Hello\n";
+  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
+  std::cout << "World\n";
+
+  Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments, true);
+  Local<Array>    best_tour       = build_tour_array(isolate, tour);
+
+  print_tour(tour);
+
+  // Run Callback 
 
   const unsigned argc       = 1;
   Local<Value>   argv[argc] = { best_tour };
@@ -94,6 +181,18 @@ void Init(Local<Object> exports) {
   	calculate_region_tour_min_distance_num_tournaments
   );
 
+  NODE_SET_METHOD(
+    exports,
+    "calculate_region_tour_min_distance_max_tournaments_from_home",
+    calculate_region_tour_min_distance_max_tournaments_from_home
+  );
+
+  NODE_SET_METHOD(
+    exports,
+    "calculate_region_tour_min_distance_num_tournaments_from_home",
+    calculate_region_tour_min_distance_num_tournaments_from_home
+  );
+
 }
 
 NODE_MODULE(NODE_GYP_MODULE_NAME, Init)
@@ -107,13 +206,11 @@ Initialises TourCalculator object with the list of tournaments and returns a poi
 
 */
 
-TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array) {
+TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array, double home_lat, double home_lon) {
 
   // Build list of tournaments
 
   std::list<Tournament*> tournaments;
-
-	Tournament *tournament;
 
 	for (int i = 0; i < tournaments_array->Length(); ++i) {
 
@@ -145,7 +242,10 @@ TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments
 
 	// Calculate tour
 
-	TourCalculator* tourcalculator = new TourCalculator(tournaments);
+  TourCalculator* tourcalculator;
+
+  if (home_lat != NULL && home_lon != NULL) tourcalculator = new TourCalculator(tournaments);
+  else                                      tourcalculator = new TourCalculator(tournaments, home_lat, home_lon);
 
 	return tourcalculator;
 

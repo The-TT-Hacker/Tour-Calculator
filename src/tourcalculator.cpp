@@ -1,9 +1,9 @@
 #include "tourcalculator.h"
+#include "functions.h"
 
 #include <iostream>
 #include <list>
 #include <string>
-#include <cstring>
 
 void print_tours_list(std::list<Tour*> *tours);
 
@@ -11,6 +11,13 @@ void print_tours_list(std::list<Tour*> *tours);
 
 TourCalculator::TourCalculator(std::list<Tournament*> tournaments)
 : tournaments(tournaments) {}
+
+TourCalculator::TourCalculator(std::list<Tournament*> tournaments, double home_lat, double home_lon)
+: tournaments(tournaments) {
+
+  home = new Home(home_lat, home_lon);
+
+}
 
 // Calculators
 
@@ -39,7 +46,7 @@ make a new one with each of the nodes child nodes.
 
 */
 
-Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num_tournaments) {
+Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num_tournaments, bool start_from_home) {
 
   build_region_graph();
 
@@ -48,7 +55,8 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
 
   // Add all the tournaments as potential start tournaments
 
-  initialise_tours_list(&prev_tours);
+  if (start_from_home) initialise_tours_list_from_home(&prev_tours);
+  else                 initialise_tours_list(&prev_tours);
   
   // Find all potential multi-tournament tours
 
@@ -101,9 +109,86 @@ make a new one with each of the nodes child nodes.
 
 */
 
-Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments() {
+Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments(bool start_from_home) {
 
   build_region_graph();
+
+  std::list<Tour*> prev_tours; // tours of length n
+  std::list<Tour*> curr_tours; // tours of length n + 1
+
+  // Add all the tournaments as potential start tournaments
+
+  if (start_from_home) initialise_tours_list_from_home(&prev_tours);
+  else                 initialise_tours_list(&prev_tours);
+  
+  // Find all potential multi-tournament tours
+
+  while (true) {
+
+    get_next_tour_iteration(&prev_tours, &curr_tours);
+
+    if (curr_tours.size() == 0) {
+
+      break;
+    
+    } else {
+    
+      prev_tours = curr_tours;
+      curr_tours.clear();
+    
+    }
+
+  }
+
+  Tour *best_tour = get_minimum_tour(prev_tours);
+
+  //print_tours_list(&prev_tours);
+
+  return best_tour;
+
+}
+
+Tour* TourCalculator::calculate_return_home_tour_min_distance_num_tournaments(int num_tournaments) {
+
+  build_return_home_graph();
+
+  std::list<Tour*> prev_tours; // tours of length n
+  std::list<Tour*> curr_tours; // tours of length n + 1
+
+  // Add all the tournaments as potential start tournaments
+
+  initialise_tours_list(&prev_tours);
+  
+  // Find all potential multi-tournament tours
+
+  for (int i = 1; i < num_tournaments; ++i) {
+
+    get_next_tour_iteration(&prev_tours, &curr_tours);
+
+    if (curr_tours.size() == 0) {
+
+      break;
+    
+    } else {
+      
+      prev_tours = curr_tours;
+      curr_tours.clear();
+    
+    }
+
+  }
+
+  Tour *best_tour = get_minimum_tour(prev_tours);
+
+  //print_tours_list(&prev_tours);
+
+  return best_tour;
+
+}
+
+Tour* TourCalculator::calculate_return_home_tour_min_distance_max_tournaments() {
+
+  build_return_home_graph();
 
   std::list<Tour*> prev_tours; // tours of length n
   std::list<Tour*> curr_tours; // tours of length n + 1
@@ -162,6 +247,27 @@ void TourCalculator::build_region_graph() {
 
 }
 
+/*
+
+Builds a graph in TourCalculator::graph where every current node has edges to
+all other nodes where the start date occurs after the current node's end_date
+
+*/
+
+void TourCalculator::build_return_home_graph() {
+
+  graph = new Graph();
+
+  for (auto const &tournament : tournaments) {
+
+    graph->add_node(tournament);
+  
+  }
+
+  graph->add_return_home_distance_edges(tournaments, home);
+
+}
+
 // Tour Calculator Helper Functions
 
 /*
@@ -182,6 +288,28 @@ void TourCalculator::initialise_tours_list(std::list<Tour*> *tours) {
     Node  *node           = *it;
     double initial_weight = 0;
 
+    tour->path.append("Begin");
+    tour->add_node(node, initial_weight);
+    tours->push_back(tour);
+
+  }
+
+}
+
+void TourCalculator::initialise_tours_list_from_home(std::list<Tour*> *tours) {
+  
+  std::list<Node*>::iterator it;
+
+  for (it = graph->nodes.begin(); it != graph->nodes.end(); ++it) {
+
+    // If a starting point is defined, add the initial from the start as the inital weight
+
+    Tour  *tour           = new Tour();
+    Node  *node           = *it;
+
+    double initial_weight = haversine_distance(home->lat, home->lon, node->lat, node->lon);
+
+    tour->path.append("Begin - Home");
     tour->add_node(node, initial_weight);
     tours->push_back(tour);
 
@@ -242,6 +370,10 @@ void Tour::add_node(Node *node, double weight) {
 
   total_weight += weight;
 
+  std::string node_string = " - " + std::to_string(weight) + " - " + node->name;
+
+  path += node_string;
+
 }
 
 Tour* Tour::copy() {
@@ -253,38 +385,8 @@ Tour* Tour::copy() {
   }
 
   new_tour->total_weight = total_weight;
+  new_tour->path         = path;
 
   return new_tour;
-
-}
-
-// Helper Functions
-
-void print_tours_list(std::list<Tour*> *tours) {
-
-  std::cout << "Tours List\n";
-
-  std::list<Tour*>::iterator it;
-
-  for (it = tours->begin(); it != tours->end(); ++it) {
-
-    Tour *curr_tour = *it;
-
-    std::cout << "\t"   << "Tour:"   << "\n";
-    std::cout << "\t\t" << "Weight:" << curr_tour->total_weight << "\n";
-    std::cout << "\t\t" << "Nodes:"  << "\n";
-
-    std::list<Node*>::iterator it2;
-
-    for (it2 = curr_tour->nodes.begin(); it2 != curr_tour->nodes.end(); ++it2) {
-      
-      Node *curr_node = *it2;
-
-      std::cout << "\t\t\t" << curr_node->name << "\n";
-
-    }
-  }
-
-  std::cout << "\n";
 
 }

@@ -142,7 +142,7 @@ def calculate_region_tour_min_distance_max_tournaments(graph, home = None):
 
   return best_tour
 
-def calculate_return_home_tour_min_distance_num_tournaments(graph, num_tournaments, home = None):
+def calculate_return_home_tour_min_distance_num_tournaments(graph, num_tournaments):
   prev_tours = [] # tours of length n
   curr_tours = [] # tours of length n + 1
 
@@ -171,8 +171,7 @@ def calculate_return_home_tour_min_distance_num_tournaments(graph, num_tournamen
         curr_tours.append(new_tour)
 
     if len(curr_tours) == 0:
-      best_tour = get_minimum_tour(prev_tours)
-      return best_tour
+      break
 
     prev_tours = curr_tours
     curr_tours = []
