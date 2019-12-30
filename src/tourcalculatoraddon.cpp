@@ -16,6 +16,7 @@ using v8::Value;
 using v8::Number;
 using v8::Array;
 using v8::Integer;
+using v8::Maybe;
 
 TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array);
 Local<Array>    build_tour_array(Isolate* isolate, Tour* tour);
@@ -64,9 +65,10 @@ void calculate_region_tour_min_distance_num_tournaments(const FunctionCallbackIn
 
   // Calculate Tour
 
-  int             num_tournaments = num->NumberValue();
+  Maybe<long int>             num_tournaments = num->IntegerValue(context);
+  int test = num_tournaments.FromJust();
   TourCalculator* tourcalculator  = build_tour_calculator(isolate, array);
-	Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments);
+	Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(test);
 	Local<Array>    best_tour       = build_tour_array(isolate, tour);
 
 	// Run Callback 
