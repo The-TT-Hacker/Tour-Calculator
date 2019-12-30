@@ -11,6 +11,8 @@ DEFS_Debug := \
 	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
+	'-DOPENSSL_NO_PINSHARED' \
+	'-DOPENSSL_THREADS' \
 	'-DBUILDING_NODE_EXTENSION' \
 	'-DDEBUG' \
 	'-D_DEBUG' \
@@ -37,13 +39,13 @@ CFLAGS_CC_Debug := \
 	-std=gnu++1y
 
 INCS_Debug := \
-	-I/home/hamish/.cache/node-gyp/13.5.0/include/node \
-	-I/home/hamish/.cache/node-gyp/13.5.0/src \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/openssl/config \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/openssl/openssl/include \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/uv/include \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/zlib \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/v8/include
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/include/node \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/src \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/openssl/config \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/openssl/openssl/include \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/uv/include \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/zlib \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/v8/include
 
 DEFS_Release := \
 	'-DNODE_GYP_MODULE_NAME=tourcalculator' \
@@ -54,6 +56,8 @@ DEFS_Release := \
 	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
+	'-DOPENSSL_NO_PINSHARED' \
+	'-DOPENSSL_THREADS' \
 	'-DBUILDING_NODE_EXTENSION'
 
 # Flags passed to all source files.
@@ -77,13 +81,13 @@ CFLAGS_CC_Release := \
 	-std=gnu++1y
 
 INCS_Release := \
-	-I/home/hamish/.cache/node-gyp/13.5.0/include/node \
-	-I/home/hamish/.cache/node-gyp/13.5.0/src \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/openssl/config \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/openssl/openssl/include \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/uv/include \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/zlib \
-	-I/home/hamish/.cache/node-gyp/13.5.0/deps/v8/include
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/include/node \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/src \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/openssl/config \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/openssl/openssl/include \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/uv/include \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/zlib \
+	-I/home/thetthacker/.cache/node-gyp/13.5.0/deps/v8/include
 
 OBJS := \
 	$(obj).target/$(TARGET)/src/tourcalculatoraddon.o \
