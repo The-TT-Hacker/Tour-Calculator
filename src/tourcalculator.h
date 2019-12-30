@@ -19,11 +19,14 @@ class TourCalculator {
 		Graph*                 graph;
 		std::list<Tournament*> tournaments;
 		Home*                  home;
+		bool                   homeExists;
 
 	public:
 
 		TourCalculator(std::list<Tournament*> tournaments);
 		TourCalculator(std::list<Tournament*> tournaments, double home_lat, double home_lon);
+
+		~TourCalculator();
 
 		// Calculator algorithms
 

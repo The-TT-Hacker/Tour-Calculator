@@ -55,7 +55,7 @@ class Edge {
 	  float weight;
 
 	  Edge(Node *node, double weight);
-	  ~Edge();
+	  
 };
 
 #endif

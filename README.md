@@ -50,3 +50,8 @@ Dynamic Program Parameters
 Final tour selection algorithm arguments
  - Number of tournaments in the tour
  - List of all possible tours of that length
+
+TODO
+====
+
+make lists with objects not pointers

@@ -17,9 +17,16 @@ using v8::Value;
 using v8::Number;
 using v8::Array;
 using v8::Integer;
+using v8::Maybe;
+using v8::MaybeLocal;
 
 TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array, double home_lat = NULL, double home_lon = NULL);
 Local<Array>    build_tour_array(Isolate* isolate, Tour* tour);
+Local<String>   get_string(const char* str, Isolate* isolate);
+Local<Object>   get_object_from_array(Local<Array> array, int i, Local<Context> context);
+std::string     get_string_from_object(Local<Object> obj, char* str, Isolate* isolate);
+double          get_double_from_object(Local<Object> obj, char* str, Isolate* isolate);
+int             get_int_from_integer(Local<Integer> num, Local<Context> context);
 
 // Tour Calculator Wrappers
 
@@ -38,7 +45,6 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
   // Calculate Tour
 
   TourCalculator* tourcalculator = build_tour_calculator(isolate, array);
-  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
 	Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments();
 	Local<Array>    best_tour      = build_tour_array(isolate, tour);
 
@@ -50,6 +56,11 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
   Local<Value>   argv[argc] = { best_tour };
   
   cb->Call(context, Null(isolate), argc, argv);
+
+  // Cleanup
+
+  delete tourcalculator;
+  delete tour;
 
 }
 
@@ -68,9 +79,8 @@ void calculate_region_tour_min_distance_num_tournaments(const FunctionCallbackIn
 
   // Calculate Tour
 
-  int             num_tournaments = num->NumberValue();
+  int             num_tournaments = get_int_from_integer(num, context);
   TourCalculator* tourcalculator  = build_tour_calculator(isolate, array);
-  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
 	Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments);
 	Local<Array>    best_tour       = build_tour_array(isolate, tour);
 
@@ -82,6 +92,11 @@ void calculate_region_tour_min_distance_num_tournaments(const FunctionCallbackIn
   Local<Value>   argv[argc] = { best_tour };
   
   cb->Call(context, Null(isolate), argc, argv);
+
+  // Cleanup
+
+  delete tourcalculator;
+  delete tour;
 
 }
 
@@ -98,16 +113,12 @@ void calculate_region_tour_min_distance_max_tournaments_from_home(const Function
   Local<Object>   home_obj = Local<Object>::Cast(args[1]);
   Local<Function> cb       = Local<Function>::Cast(args[2]);
 
-  Local<Value> home_lat_val = home_obj->Get(String::NewFromUtf8(isolate, "lat"));
-  double       home_lat     = home_lat_val->NumberValue();
-
-  Local<Value> home_lon_val = home_obj->Get(String::NewFromUtf8(isolate, "lon"));
-  double       home_lon     = home_lat_val->NumberValue();
+  double home_lat = get_double_from_object(home_obj, "lat", isolate);
+  double home_lon = get_double_from_object(home_obj, "lon", isolate);
 
   // Calculate Tour
 
   TourCalculator* tourcalculator = build_tour_calculator(isolate, array, home_lat, home_lon);
-  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
   Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments(true);
   Local<Array>    best_tour      = build_tour_array(isolate, tour);
 
@@ -119,6 +130,11 @@ void calculate_region_tour_min_distance_max_tournaments_from_home(const Function
   Local<Value>   argv[argc] = { best_tour };
   
   cb->Call(context, Null(isolate), argc, argv);
+
+  // Cleanup
+
+  delete tourcalculator;
+  delete tour;
 
 }
 
@@ -136,21 +152,13 @@ void calculate_region_tour_min_distance_num_tournaments_from_home(const Function
   Local<Object>   home_obj = Local<Object>::Cast(args[2]);
   Local<Function> cb       = Local<Function>::Cast(args[3]);
 
-  Local<Value> home_lat_val = home_obj->Get(String::NewFromUtf8(isolate, "lat"));
-  double       home_lat     = home_lat_val->NumberValue();
-
-  Local<Value> home_lon_val = home_obj->Get(String::NewFromUtf8(isolate, "lon"));
-  double       home_lon     = home_lat_val->NumberValue();
+  double home_lat = get_double_from_object(home_obj, "lat", isolate);
+  double home_lon = get_double_from_object(home_obj, "lon", isolate);
 
   // Calculate Tour
 
-  int             num_tournaments = num->NumberValue();
+  int             num_tournaments = get_int_from_integer(num, context);
   TourCalculator* tourcalculator  = build_tour_calculator(isolate, array, home_lat, home_lon);
-
-  std::cout << "Hello\n";
-  std::cout << "size: " << tourcalculator->graph->nodes.size() << "\n";
-  std::cout << "World\n";
-
   Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments, true);
   Local<Array>    best_tour       = build_tour_array(isolate, tour);
 
@@ -162,6 +170,11 @@ void calculate_region_tour_min_distance_num_tournaments_from_home(const Function
   Local<Value>   argv[argc] = { best_tour };
   
   cb->Call(context, Null(isolate), argc, argv);
+
+  // Cleanup
+
+  delete tourcalculator;
+  delete tour;
 
 }
 
@@ -208,31 +221,22 @@ Initialises TourCalculator object with the list of tournaments and returns a poi
 
 TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array, double home_lat, double home_lon) {
 
+  Local<Context> context = isolate->GetCurrentContext();
+
   // Build list of tournaments
 
   std::list<Tournament*> tournaments;
 
-	for (int i = 0; i < tournaments_array->Length(); ++i) {
+	for (uint32_t i = 0; i < tournaments_array->Length(); ++i) {
 
-	  Local<Object> tournament_obj = Local<Object>::Cast(tournaments_array->Get(i));
+    Local<Object> tournament_obj = get_object_from_array(tournaments_array, i, context);
 
-	  Local<Value> value_name = tournament_obj->Get(String::NewFromUtf8(isolate, "name"));
-		String::Utf8Value str_name(isolate, value_name);
-		std::string       name(*str_name);
+    std::string name       = get_string_from_object(tournament_obj, "name", isolate);
+    std::string start_date = get_string_from_object(tournament_obj, "start_date", isolate);
+    std::string end_date   = get_string_from_object(tournament_obj, "end_date", isolate);
 
-		Local<Value> value_start_date = tournament_obj->Get(String::NewFromUtf8(isolate, "start_date"));
-		String::Utf8Value str_start_date(isolate, value_start_date);
-		std::string       start_date(*str_start_date);
-
-		Local<Value> value_end_date = tournament_obj->Get(String::NewFromUtf8(isolate, "end_date"));
-		String::Utf8Value str_end_date(isolate, value_end_date);
-		std::string       end_date(*str_end_date);
-
-	  Local<Value> value_lat = tournament_obj->Get(String::NewFromUtf8(isolate, "lat"));
-	  double lat = value_lat->NumberValue();
-
-	  Local<Value> value_lon = tournament_obj->Get(String::NewFromUtf8(isolate, "lon"));
-	  double lon = value_lon->NumberValue();
+    double lat = get_double_from_object(tournament_obj, "lat", isolate);
+    double lon = get_double_from_object(tournament_obj, "lon", isolate);
 
 	  Tournament *tournament = new Tournament(name, start_date, end_date, lat, lon);
 
@@ -244,8 +248,8 @@ TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments
 
   TourCalculator* tourcalculator;
 
-  if (home_lat != NULL && home_lon != NULL) tourcalculator = new TourCalculator(tournaments);
-  else                                      tourcalculator = new TourCalculator(tournaments, home_lat, home_lon);
+  if (home_lat != NULL && home_lon != NULL) tourcalculator = new TourCalculator(tournaments, home_lat, home_lon);
+  else                                      tourcalculator = new TourCalculator(tournaments);
 
 	return tourcalculator;
 
@@ -265,6 +269,8 @@ best_tour = [
 
 Local<Array> build_tour_array(Isolate* isolate, Tour* tour) {
 
+  Local<Context> context = isolate->GetCurrentContext();
+
 	Local<Array> best_tour = Array::New(isolate);
 
 	std::list<Node*>::iterator it;
@@ -277,13 +283,13 @@ Local<Array> build_tour_array(Isolate* isolate, Tour* tour) {
 
   	Local<Object> tour_obj = Object::New(isolate);
 
-  	tour_obj->Set(String::NewFromUtf8(isolate, "name"),       String::NewFromUtf8(isolate, node->name.c_str()));
-  	tour_obj->Set(String::NewFromUtf8(isolate, "start_date"), String::NewFromUtf8(isolate, node->start_date.c_str()));
-  	tour_obj->Set(String::NewFromUtf8(isolate, "end_date"),   String::NewFromUtf8(isolate, node->end_date.c_str()));
-  	tour_obj->Set(String::NewFromUtf8(isolate, "lat"),        Number::New(isolate, node->lat));
-  	tour_obj->Set(String::NewFromUtf8(isolate, "lon"),        Number::New(isolate, node->lon));
+  	tour_obj->Set(context, get_string("name", isolate),       get_string(node->name.c_str(), isolate));
+  	tour_obj->Set(context, get_string("start_date", isolate), get_string(node->start_date.c_str(), isolate));
+  	tour_obj->Set(context, get_string("end_date", isolate),   get_string(node->end_date.c_str(), isolate));
+  	tour_obj->Set(context, get_string("lat", isolate),        Number::New(isolate, node->lat));
+  	tour_obj->Set(context, get_string("lon", isolate),        Number::New(isolate, node->lon));
 
-  	best_tour->Set(i, tour_obj);
+  	best_tour->Set(context, i, tour_obj);
 
   	++i;
 
@@ -291,4 +297,69 @@ Local<Array> build_tour_array(Isolate* isolate, Tour* tour) {
 
 	return best_tour;
 
+}
+
+Local<String> get_string(const char* str, Isolate* isolate) {
+
+  MaybeLocal<String> maybe_key = String::NewFromUtf8(isolate, str);
+  Local<String> key;
+  maybe_key.ToLocal(&key);
+
+  return key;
+
+}
+
+Local<Object> get_object_from_array(Local<Array> array, int i, Local<Context> context) {
+
+  MaybeLocal<Value> maybe_value = array->Get(context, i);
+  Local<Value> value;
+  maybe_value.ToLocal(&value);
+
+  Local<Object> obj = Local<Object>::Cast(value);
+
+  return obj;
+
+}
+
+std::string get_string_from_object(Local<Object> obj, char* str, Isolate* isolate) {
+
+  Local<Context> context = isolate->GetCurrentContext();
+
+  Local<String> key = get_string(str, isolate);
+
+  MaybeLocal<Value> maybe_value = obj->Get(context, key);
+  Local<Value> value;
+  maybe_value.ToLocal(&value);
+
+  String::Utf8Value str_value(isolate, value);
+  std::string       ret_str(*str_value);
+
+  return ret_str;
+
+}
+
+double get_double_from_object(Local<Object> obj, char* str, Isolate* isolate) {
+
+  Local<Context> context = isolate->GetCurrentContext();
+
+  Local<String> key = get_string(str, isolate);
+
+  MaybeLocal<Value> maybe_value = obj->Get(context, key);
+  Local<Value> value;
+  maybe_value.ToLocal(&value);
+
+  Maybe<double> maybe_double = value->NumberValue(context);
+  double        double_value = maybe_double.FromJust();
+
+  return double_value;
+
+}
+
+int get_int_from_integer(Local<Integer> num, Local<Context> context) {
+
+  Maybe<long int> maybe_num = num->IntegerValue(context);
+
+  int integer = maybe_num.FromJust();
+
+  return integer;
 }

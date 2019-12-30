@@ -97,3 +97,17 @@ void print_tour(Tour* tour) {
   }
 
 }
+
+void free_tours(std::list<Tour*>* tours) {
+
+  std::list<Tour*>::iterator it;
+
+  for (it = tours->begin(); it != tours->end(); ++it) {
+    
+    Tour *tour = *it;
+
+    delete tour;
+
+  }
+
+}

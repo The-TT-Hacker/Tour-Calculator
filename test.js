@@ -19,18 +19,26 @@ tourcalculator.calculate_region_tour_min_distance_max_tournaments(tournaments, f
 	console.log("calculate_region_tour_min_distance_max_tournaments");
   console.log(tour);
 });
-/*
+
+console.log("1");
+
 tourcalculator.calculate_region_tour_min_distance_num_tournaments(tournaments, num_tournaments, function (tour) {
 	console.log("calculate_region_tour_min_distance_num_tournaments");
   console.log(tour);
 });
+
+console.log("2");
 
 tourcalculator.calculate_region_tour_min_distance_max_tournaments_from_home(tournaments, home, function (tour) {
 	console.log("calculate_region_tour_min_distance_max_tournaments_from_home");
   console.log(tour);
 });
 
+console.log("3");
+
 tourcalculator.calculate_region_tour_min_distance_num_tournaments_from_home(tournaments, num_tournaments, home, function (tour) {
 	console.log("calculate_region_tour_min_distance_num_tournaments_from_home");
   console.log(tour);
-});*/
+});
+
+console.log("4");

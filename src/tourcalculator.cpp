@@ -10,12 +10,37 @@ void print_tours_list(std::list<Tour*> *tours);
 //// Tour Calculator
 
 TourCalculator::TourCalculator(std::list<Tournament*> tournaments)
-: tournaments(tournaments) {}
+: tournaments(tournaments) {
+
+  graph      = new Graph();
+  homeExists = false;
+
+}
 
 TourCalculator::TourCalculator(std::list<Tournament*> tournaments, double home_lat, double home_lon)
 : tournaments(tournaments) {
 
-  home = new Home(home_lat, home_lon);
+  graph      = new Graph();
+  home       = new Home(home_lat, home_lon);
+  homeExists = true;
+
+}
+
+TourCalculator::~TourCalculator() {
+
+  delete graph;
+
+  std::list<Tournament*>::iterator it;
+
+  for (it = tournaments.begin(); it != tournaments.end(); ++it) {
+
+    Tournament *tournament = *it;
+
+    delete tournament;
+
+  }
+
+  if (homeExists) delete home;
 
 }
 
@@ -70,6 +95,7 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
     
     } else {
       
+      free_tours(&prev_tours);
       prev_tours = curr_tours;
       curr_tours.clear();
     
@@ -133,6 +159,7 @@ Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments(bool st
     
     } else {
     
+      free_tours(&prev_tours);
       prev_tours = curr_tours;
       curr_tours.clear();
     
@@ -171,6 +198,7 @@ Tour* TourCalculator::calculate_return_home_tour_min_distance_num_tournaments(in
     
     } else {
       
+      free_tours(&prev_tours);
       prev_tours = curr_tours;
       curr_tours.clear();
     
@@ -209,6 +237,7 @@ Tour* TourCalculator::calculate_return_home_tour_min_distance_max_tournaments() 
     
     } else {
     
+      free_tours(&prev_tours);
       prev_tours = curr_tours;
       curr_tours.clear();
     
@@ -255,8 +284,6 @@ all other nodes where the start date occurs after the current node's end_date
 */
 
 void TourCalculator::build_return_home_graph() {
-
-  graph = new Graph();
 
   for (auto const &tournament : tournaments) {
 

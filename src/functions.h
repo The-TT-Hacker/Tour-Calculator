@@ -6,6 +6,7 @@
 #include <cstring>
 #include <math.h>
 #include <iostream>
+#include <list>
 
 #define earthRadiusKm 6371.0
 
@@ -15,5 +16,6 @@ double rad2deg(double rad);
 double haversine_distance(const double lat1, const double lon1, const double lat2, const double lon2);
 void   print_tours_list(std::list<Tour*> *tours);
 void   print_tour(Tour* tour);
+void   free_tours(std::list<Tour*>* tours);
 
 #endif

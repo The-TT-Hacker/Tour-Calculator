@@ -86,6 +86,7 @@ void Graph::add_return_home_distance_edges(std::list<Tournament*> tournaments, H
         currNode->add_edge(childNode, distance);
       
       }
+      
     }
 
   }
