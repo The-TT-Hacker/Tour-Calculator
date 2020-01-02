@@ -61,17 +61,17 @@ double haversine_distance(const double lat1, const double lon1, const double lat
 
 }
 
-void print_tours_list(std::list<Tour*> *tours) {
+void print_tours_list(std::list<Tour> *tours) {
 
   std::cout << "Tours List\n";
 
-  std::list<Tour*>::iterator it;
+  std::list<Tour>::iterator it;
 
   for (it = tours->begin(); it != tours->end(); ++it) {
 
-    Tour *curr_tour = *it;
+    Tour curr_tour = *it;
 
-    print_tour(curr_tour);
+    print_tour(&curr_tour);
 
   }
 
@@ -86,27 +86,13 @@ void print_tour(Tour* tour) {
   std::cout << "\t" << "Path: "   << tour->path << "\n";
   std::cout << "\t" << "Nodes:"   << "\n";
 
-  std::list<Node*>::iterator it;
+  std::list<Node>::iterator it;
 
   for (it = tour->nodes.begin(); it != tour->nodes.end(); ++it) {
     
-    Node *node = *it;
+    Node* node = &(*it);
 
     std::cout << "\t\t" << node->name << "\n";
-
-  }
-
-}
-
-void free_tours(std::list<Tour*>* tours) {
-
-  std::list<Tour*>::iterator it;
-
-  for (it = tours->begin(); it != tours->end(); ++it) {
-    
-    Tour *tour = *it;
-
-    delete tour;
 
   }
 

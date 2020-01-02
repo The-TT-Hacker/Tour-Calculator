@@ -15,13 +15,13 @@ class Edge;
 class Graph {
 
 	public:
-		std::list<Node*> nodes;
+		std::list<Node> nodes;
 
 		~Graph();
 
-		void add_node(Tournament *tournament);
-		void add_region_distance_edges(std::list<Tournament*> tournaments);
-		void add_return_home_distance_edges(std::list<Tournament*> tournaments, Home* home);
+		void add_node(const Tournament *tournament);
+		void add_region_distance_edges();
+		void add_return_home_distance_edges(Home* home);
 
 };
 
@@ -37,9 +37,9 @@ class Node {
 		double  lat;
 		double  lon;
 
-		std::list<Edge*> edges;
+		std::list<Edge> edges;
 
-	  Node(Tournament *tournament);
+	  Node(const Tournament *tournament);
 	  ~Node();
   
   	void add_edge(Node *node, double weight);

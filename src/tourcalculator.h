@@ -17,14 +17,14 @@ class TourCalculator {
 	public:
 
 		Graph*                 graph;
-		std::list<Tournament*> tournaments;
 		Home*                  home;
 		bool                   homeExists;
+		std::list<Tournament>  tournaments;
 
 	public:
 
-		TourCalculator(std::list<Tournament*> tournaments);
-		TourCalculator(std::list<Tournament*> tournaments, double home_lat, double home_lon);
+		TourCalculator(std::list<Tournament> tournaments);
+		TourCalculator(std::list<Tournament> tournaments, double home_lat, double home_lon);
 
 		~TourCalculator();
 
@@ -47,10 +47,10 @@ class TourCalculator {
 
 		// Helper functions
 
-		void  initialise_tours_list(std::list<Tour*> *tours);
-		void  initialise_tours_list_from_home(std::list<Tour*> *tours);
-		void  get_next_tour_iteration(std::list<Tour*> *prev_tours, std::list<Tour*> *curr_tours);
-		Tour* get_minimum_tour(std::list<Tour*> tours);
+		void  initialise_tours_list(std::list<Tour> *tours);
+		void  initialise_tours_list_from_home(std::list<Tour> *tours);
+		void  get_next_tour_iteration(std::list<Tour> *prev_tours, std::list<Tour> *curr_tours);
+		Tour* get_minimum_tour(std::list<Tour> *tours);
 
 };
 
@@ -60,12 +60,14 @@ class Tour {
 
 	public:
 
-	  std::list<Node*> nodes;
-	  double           total_weight = 0;
-	  std::string      path;
+	  std::list<Node> nodes;
+	  double          total_weight = 0;
+	  std::string     path;
 
-	  void  add_node(Node *node, double weight);
-	  Tour* copy();
+	  ~Tour();
+
+	  void add_node(Node *node, double weight);
+	  Tour copy();
 
 };
 
