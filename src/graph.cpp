@@ -10,6 +10,8 @@ double haversine_distance(const double lat1, const double lon1, const double lat
 
 Graph::~Graph() {
 
+	std::cout << "Deleted Graph\n";
+
 	nodes.clear();
 
 }
@@ -32,7 +34,7 @@ void Graph::add_region_distance_edges() {
 
 		Node* currNode = &(*it);
     
-    std::list<Node>::iterator it2 = nodes.begin();
+    	std::list<Node>::iterator it2 = nodes.begin();
 		
 		for (advance(it2, i); it2 != nodes.end(); ++it2) {
 
@@ -94,6 +96,8 @@ Node::Node(const Tournament *tournament)
 : name(tournament->name), start_date(tournament->start_date), end_date(tournament->end_date), lat(tournament->lat), lon(tournament->lon) {}
 
 Node::~Node() {
+
+	std::cout << "Deleted Node\n";
 
 	edges.clear();
 

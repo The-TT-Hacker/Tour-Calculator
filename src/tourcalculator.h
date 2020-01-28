@@ -30,12 +30,10 @@ class TourCalculator {
 
 		// Calculator algorithms
 
-		Tour* calculate_region_tour_min_distance_num_tournaments(int num_tournaments, bool start_from_home = false);
-		Tour* calculate_region_tour_min_distance_max_tournaments(bool start_from_home = false);
+		Tour* calculate_region_tour_min_distance_num_tournaments(int num_tournaments);
+		Tour* calculate_region_tour_min_distance_max_tournaments();
 		Tour* calculate_return_home_tour_min_distance_num_tournaments(int num_tournaments);
 		Tour* calculate_return_home_tour_min_distance_max_tournaments();
-		//Tour* calculate_point_to_point_tour_min_distance_num_tournaments();
-		//Tour* calculate_point_to_point_tour_min_distance_max_tournaments();
 
 	private:
 
@@ -43,7 +41,6 @@ class TourCalculator {
 
 		void build_region_graph();
 		void build_return_home_graph();
-		//void build_point_to_point_graph();
 
 		// Helper functions
 

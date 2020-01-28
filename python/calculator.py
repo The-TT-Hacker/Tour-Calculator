@@ -188,3 +188,48 @@ def calculate_point_to_point_tour_min_distance_num_tournaments():
 
 def calculate_point_to_point_tour_min_distance_max_tournaments():
   pass
+
+
+def test_calculate_region_tour_min_distance_num_tournaments(graph, num_tournaments, home = None):
+  
+  prev_tours = [] # tours of length n
+  curr_tours = [] # tours of length n + 1
+    
+  # Add all the tournaments as potential start tournaments
+  for node in graph.nodes:
+
+    # If a starting point is defined, add the initial from the start as the inital weight
+    if home:
+      initial_weight = haversine(home["lon"], home["lat"], node.lon, node.lat)
+    else:
+      initial_weight = 0
+
+    tour = Tour(node, initial_weight)
+
+    prev_tours.append(tour)
+  
+  # Find all potential multi-tournament tours
+  for i in range(num_tournaments - 1):
+
+    for tour in prev_tours:
+
+      # Get the last node in the tour
+      last_node = tour.nodes[-1]
+
+      # Make a new tour with each of the child nodes
+      for edge in last_node.edges:
+
+        new_tour = tour.copy()
+        new_tour.add_node(edge.node, edge.weight)
+        curr_tours.append(new_tour)
+
+    if len(curr_tours) == 0:
+      best_tour = get_minimum_tour(prev_tours)
+      return best_tour
+
+    prev_tours = curr_tours
+    curr_tours = []
+
+  best_tour = get_minimum_tour(prev_tours)
+
+  return best_tour

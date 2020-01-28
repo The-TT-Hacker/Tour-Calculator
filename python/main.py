@@ -6,6 +6,11 @@ from graph      import *
 from calculator import *
 from datetime   import datetime
 
+def test(tournaments, n):
+
+	if (n == 1):
+		
+
 NUM_TOURNAMENTS = 2
 
 home1 = {"lat": -33.823685, "lon": 151.193543}
@@ -25,7 +30,7 @@ if __name__ == "__main__":
 
 	#print(graph)
 
-	tour1 = calculate_return_home_tour_min_distance_num_tournaments(graph, NUM_TOURNAMENTS)
+	tour1 = calculate_region_tour_min_distance_num_tournaments(graph, NUM_TOURNAMENTS)
 	#tour2 = calculate_tour_min_distance_max_tournaments(graph, home2)
 
 	print(tour1)

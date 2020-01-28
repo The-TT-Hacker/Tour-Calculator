@@ -8,7 +8,13 @@ Release/obj.target/tourcalculator/src/tourcalculatoraddon.o: \
  /home/thetthacker/.cache/node-gyp/13.5.0/include/node/v8-version.h \
  /home/thetthacker/.cache/node-gyp/13.5.0/include/node/v8config.h \
  /home/thetthacker/.cache/node-gyp/13.5.0/include/node/v8-platform.h \
- /home/thetthacker/.cache/node-gyp/13.5.0/include/node/node_version.h
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/node_version.h \
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv.h \
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/errno.h \
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/version.h \
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/unix.h \
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/threadpool.h \
+ /home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/linux.h
 ../src/tourcalculatoraddon.cpp:
 ../src/tourcalculator.h:
 ../src/tournament.h:
@@ -21,3 +27,9 @@ Release/obj.target/tourcalculator/src/tourcalculatoraddon.o: \
 /home/thetthacker/.cache/node-gyp/13.5.0/include/node/v8config.h:
 /home/thetthacker/.cache/node-gyp/13.5.0/include/node/v8-platform.h:
 /home/thetthacker/.cache/node-gyp/13.5.0/include/node/node_version.h:
+/home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv.h:
+/home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/errno.h:
+/home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/version.h:
+/home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/unix.h:
+/home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/threadpool.h:
+/home/thetthacker/.cache/node-gyp/13.5.0/include/node/uv/linux.h:

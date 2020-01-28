@@ -2,8 +2,10 @@
 #include "functions.h"
 
 #include <node.h>
+#include <uv.h>
 #include <iostream>
 #include <list>
+#include <unistd.h>
 
 using v8::Context;
 using v8::FunctionCallbackInfo;
@@ -19,6 +21,8 @@ using v8::Array;
 using v8::Integer;
 using v8::Maybe;
 using v8::MaybeLocal;
+using v8::Persistent;
+using v8::HandleScope;
 
 void            build_tournament_list(Isolate* isolate, Local<Array> tournaments_array, std::list<Tournament>* tournaments);
 TourCalculator* build_tour_calculator(Isolate* isolate, Local<Array> tournaments_array);
@@ -29,6 +33,66 @@ Local<Object>   get_object_from_array(Local<Array> array, int i, Local<Context> 
 std::string     get_string_from_object(Local<Object> obj, const char* str, Isolate* isolate);
 double          get_double_from_object(Local<Object> obj, const char* str, Isolate* isolate);
 int             get_int_from_integer(Local<Integer> num, Local<Context> context);
+
+struct worker_data {
+  int                  num_tournaments;
+  TourCalculator*      tourcalculator;
+  Tour*                tour;
+  Persistent<Function> callback;
+};
+
+void calculate_region_tour_min_distance_max_tournaments_worker(uv_work_t* req) {
+  worker_data* request = (worker_data*)req->data;
+  request->tour = request->tourcalculator->calculate_region_tour_min_distance_max_tournaments();
+
+  sleep(2);
+}
+
+void calculate_region_tour_min_distance_num_tournaments_worker(uv_work_t* req) {
+  worker_data* request = (worker_data*)req->data;
+  request->tour = request->tourcalculator->calculate_region_tour_min_distance_num_tournaments(request->num_tournaments);
+
+  sleep(2);
+}
+
+void calculate_region_tour_min_distance_max_tournaments_from_home_worker(uv_work_t* req) {
+  worker_data* request = (worker_data*)req->data;
+  request->tour = request->tourcalculator->calculate_region_tour_min_distance_max_tournaments();
+
+  sleep(2);
+}
+
+void calculate_region_tour_min_distance_num_tournaments_from_home_worker(uv_work_t* req) {
+  worker_data* request = (worker_data*)req->data;
+  request->tour = request->tourcalculator->calculate_region_tour_min_distance_num_tournaments(request->num_tournaments);
+
+  sleep(2);
+}
+
+void post_calculation(uv_work_t* req, int status) {
+
+  Isolate* isolate = Isolate::GetCurrent();
+  HandleScope scope(isolate);
+
+  worker_data* request = (worker_data*)req->data;
+  delete req;
+
+  Local<Array> best_tour = build_tour_array(isolate, request->tour);
+
+  Local<Value> argv[1];
+
+  argv[0] = best_tour;
+
+  Local<Function>::New(isolate, request->callback)->Call(isolate->GetCurrentContext(), Null(isolate), 1, argv);
+
+  // Cleanup
+
+  delete request->tourcalculator;
+  delete request->tour;
+  request->callback.~Persistent();
+  delete request;
+
+}
 
 // Tour Calculator Wrappers
 
@@ -41,60 +105,56 @@ void calculate_region_tour_min_distance_max_tournaments(const FunctionCallbackIn
 
   // JS Arguments
 
-  Local<Array>    array = Local<Array>::Cast(args[0]);
-  Local<Function> cb    = Local<Function>::Cast(args[1]);
+  Local<Array>    array    = Local<Array>::Cast(args[0]);
+  Local<Function> callback = Local<Function>::Cast(args[1]);
 
-  // Calculate Tour
+  // Thread Pool Setup
 
-  TourCalculator* tourcalculator = build_tour_calculator(isolate, array);
-	Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments();
-	Local<Array>    best_tour      = build_tour_array(isolate, tour);
+  worker_data*   request = new worker_data;
+  uv_work_t* req     = new uv_work_t();
 
-	// Run Callback 
-
-  const unsigned argc       = 1;
-  Local<Value>   argv[argc] = { best_tour };
+  request->tourcalculator  = build_tour_calculator(isolate, array);
+  request->callback.Reset(isolate, callback);
   
-  cb->Call(context, Null(isolate), argc, argv);
+  req->data = request;
 
-  // Cleanup
+  // Push To Thread Pool
 
-  delete tourcalculator;
-  delete tour;
+  uv_queue_work(uv_default_loop(), req, calculate_region_tour_min_distance_max_tournaments_worker, post_calculation);
 
 }
 
 void calculate_region_tour_min_distance_num_tournaments(const FunctionCallbackInfo<Value>& args) {
 
-	// Preamble - JS Environment
+  // Preamble - JS Environment
 
   Isolate*        isolate = args.GetIsolate();
   Local<Context>  context = isolate->GetCurrentContext();
 
   // JS Arguments
 
-  Local<Array>    array = Local<Array>::Cast(args[0]);
-  Local<Integer>  num   = Local<Integer>::Cast(args[1]);
-  Local<Function> cb    = Local<Function>::Cast(args[2]);
+  Local<Array>    array    = Local<Array>::Cast(args[0]);
+  Local<Integer>  num      = Local<Integer>::Cast(args[1]);
+  Local<Function> callback = Local<Function>::Cast(args[2]);
 
-  // Calculate Tour
+  // Convert Arguments
 
-  int             num_tournaments = get_int_from_integer(num, context);
-  TourCalculator* tourcalculator  = build_tour_calculator(isolate, array);
-	Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments);
-	Local<Array>    best_tour       = build_tour_array(isolate, tour);
+  int num_tournaments = get_int_from_integer(num, context);
 
-	// Run Callback 
+  // Thread Pool Setup
 
-  const unsigned argc       = 1;
-  Local<Value>   argv[argc] = { best_tour };
-  
-  cb->Call(context, Null(isolate), argc, argv);
+  worker_data*   request = new worker_data;
+  uv_work_t* req     = new uv_work_t();
 
-  // Cleanup
+  request->num_tournaments = num_tournaments;
+  request->tourcalculator  = build_tour_calculator(isolate, array);
+  request->callback.Reset(isolate, callback);
 
-  delete tourcalculator;
-  delete tour;
+  req->data = request;
+
+  // Push To Thread Pool
+
+  uv_queue_work(uv_default_loop(), req, calculate_region_tour_min_distance_num_tournaments_worker, post_calculation);
 
 }
 
@@ -109,28 +169,26 @@ void calculate_region_tour_min_distance_max_tournaments_from_home(const Function
 
   Local<Array>    array    = Local<Array>::Cast(args[0]);
   Local<Object>   home_obj = Local<Object>::Cast(args[1]);
-  Local<Function> cb       = Local<Function>::Cast(args[2]);
+  Local<Function> callback = Local<Function>::Cast(args[2]);
+
+  // Convert Arguments
 
   double home_lat = get_double_from_object(home_obj, "lat", isolate);
   double home_lon = get_double_from_object(home_obj, "lon", isolate);
 
-  // Calculate Tour
+  // Thread Pool Setup
 
-  TourCalculator* tourcalculator = build_tour_calculator_with_home(isolate, array, home_lat, home_lon);
-  Tour*           tour           = tourcalculator->calculate_region_tour_min_distance_max_tournaments(true);
-  Local<Array>    best_tour      = build_tour_array(isolate, tour);
+  worker_data* request = new worker_data;
+  uv_work_t*   req     = new uv_work_t();
 
-  // Run Callback 
+  request->tourcalculator = build_tour_calculator_with_home(isolate, array, home_lat, home_lon);
+  request->callback.Reset(isolate, callback);
 
-  const unsigned argc       = 1;
-  Local<Value>   argv[argc] = { best_tour };
-  
-  cb->Call(context, Null(isolate), argc, argv);
+  req->data = request;
 
-  // Cleanup
+  // Push To Thread Pool
 
-  delete tourcalculator;
-  delete tour;
+  uv_queue_work(uv_default_loop(), req, calculate_region_tour_min_distance_max_tournaments_from_home_worker, post_calculation);
 
 }
 
@@ -146,29 +204,28 @@ void calculate_region_tour_min_distance_num_tournaments_from_home(const Function
   Local<Array>    array    = Local<Array>::Cast(args[0]);
   Local<Integer>  num      = Local<Integer>::Cast(args[1]);
   Local<Object>   home_obj = Local<Object>::Cast(args[2]);
-  Local<Function> cb       = Local<Function>::Cast(args[3]);
+  Local<Function> callback = Local<Function>::Cast(args[3]);
 
-  double home_lat = get_double_from_object(home_obj, "lat", isolate);
-  double home_lon = get_double_from_object(home_obj, "lon", isolate);
+  // Convert Arguments
 
-  // Calculate Tour
+  double home_lat        = get_double_from_object(home_obj, "lat", isolate);
+  double home_lon        = get_double_from_object(home_obj, "lon", isolate);
+  int    num_tournaments = get_int_from_integer(num, context);
 
-  int             num_tournaments = get_int_from_integer(num, context);
-  TourCalculator* tourcalculator  = build_tour_calculator_with_home(isolate, array, home_lat, home_lon);
-  Tour*           tour            = tourcalculator->calculate_region_tour_min_distance_num_tournaments(num_tournaments, true);
-  Local<Array>    best_tour       = build_tour_array(isolate, tour);
+  // Thread Pool Setup
 
-  // Run Callback 
+  worker_data* request = new worker_data;
+  uv_work_t*   req     = new uv_work_t();
 
-  const unsigned argc       = 1;
-  Local<Value>   argv[argc] = { best_tour };
-  
-  cb->Call(context, Null(isolate), argc, argv);
+  request->num_tournaments = num_tournaments;
+  request->tourcalculator  = build_tour_calculator_with_home(isolate, array, home_lat, home_lon);
+  request->callback.Reset(isolate, callback);
 
-  // Cleanup
+  req->data = request;
 
-  delete tourcalculator;
-  delete tour;
+  // Push To Thread Pool
+
+  uv_queue_work(uv_default_loop(), req, calculate_region_tour_min_distance_num_tournaments_from_home_worker, post_calculation);
 
 }
 
@@ -223,12 +280,12 @@ void build_tournament_list(Isolate* isolate, Local<Array> tournaments_array, std
 
     Local<Object> tournament_obj = get_object_from_array(tournaments_array, i, context);
 
-    std::string name       = get_string_from_object(tournament_obj, "name", isolate);
-    std::string start_date = get_string_from_object(tournament_obj, "start_date", isolate);
-    std::string end_date   = get_string_from_object(tournament_obj, "end_date", isolate);
+    std::string name       = get_string_from_object(tournament_obj, "tournamentName", isolate);
+    std::string start_date = get_string_from_object(tournament_obj, "startDate", isolate);
+    std::string end_date   = get_string_from_object(tournament_obj, "endDate", isolate);
 
-    double lat = get_double_from_object(tournament_obj, "lat", isolate);
-    double lon = get_double_from_object(tournament_obj, "lon", isolate);
+    double lat = get_double_from_object(tournament_obj, "latitude", isolate);
+    double lon = get_double_from_object(tournament_obj, "longitude", isolate);
 
     Tournament tournament = Tournament(name, start_date, end_date, lat, lon);
 

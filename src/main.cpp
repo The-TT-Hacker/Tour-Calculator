@@ -2,50 +2,275 @@
 #include "graph.h"
 
 #include <iostream>
+#include <unistd.h>
 
 void print_tour(Tour *tour);
 
 int main () {
 
-	std::list<Tournament*> tournaments;
+	std::list<Tournament> tournaments;
 
-	Tournament *tournament1 = new Tournament("Wimbledon",  "01/01/2020", "03/01/2020", 51.433558,  -0.215512);
-	Tournament *tournament2 = new Tournament("Sydney",     "03/01/2020", "06/01/2020", -33.854980, 151.072281);
-	Tournament *tournament3 = new Tournament("Newcastle",  "07/01/2020", "09/01/2020", -32.923188, 151.729923);
-	Tournament *tournament4 = new Tournament("Wollongong", "10/01/2020", "12/01/2020", -34.418964, 150.886659);
-	Tournament *tournament5 = new Tournament("Bathurst",   "13/01/2020", "15/01/2020", -33.407295, 149.576608);
+	Tournament tournament0 = Tournament("Qatar ExxonMobil Open", "01/01/2018", "06/01/2018", 25.291611, 51.530437);
+	Tournament tournament1 = Tournament("Tata Open Maharashtra", "01/01/2018", "06/01/2018", 13.08268, 80.270721);
+	Tournament tournament2 = Tournament("Sydney International", "07/01/2018", "13/01/2018", -33.855042, 151.072342);
+	Tournament tournament3 = Tournament("ASB Classic", "08/01/2018", "13/01/2018", -36.848461, 174.763336);
+	Tournament tournament4 = Tournament("Ecuador Open", "05/02/2018", "11/02/2018", -0.180653, -78.467834);
+	/*
+	Tournament tournament5 = Tournament("Open Sud de France", "05/02/2018", "11/02/2018", 43.573666, 3.952668);
+	Tournament tournament6 = Tournament("Sofia Open", "05/02/2018", "11/02/2018", 42.671425, 23.369343);
+	Tournament tournament7 = Tournament("ABN Amro World Tennis Tournament", "12/02/2018", "18/02/2018", 51.883148, 4.488172);
+	Tournament tournament8 = Tournament("New York Open", "12/02/2018", "18/02/2018", 40.720299, -73.5877);
+	Tournament tournament9 = Tournament("Argentina Open", "12/02/2018", "18/02/2018", -34.67717, -58.446171);
+	Tournament tournament10 = Tournament("Rio Open presented by Claro", "19/02/2018", "25/02/2018", -21.763128, -41.303349);
+	Tournament tournament11 = Tournament("Open 13 Marseille", "19/02/2018", "25/02/2018", 43.271729, 5.400124);
+	Tournament tournament12 = Tournament("Delray Beach Open", "19/02/2018", "25/02/2018", 26.462488, -80.075478);
+	Tournament tournament13 = Tournament("Dubai Duty Free Tennis Championships", "26/02/2018", "03/03/2018", 25.240028, 55.3503);
+	Tournament tournament14 = Tournament("Abierto Mexicano Telcel presentado por HSBC", "26/02/2018", "03/03/2018", 16.788414, -99.814034);
+	Tournament tournament15 = Tournament("Brasil Open", "26/02/2018", "04/03/2018", -23.55052, -46.633308);
+	Tournament tournament16 = Tournament("BNP Paribas Open", "08/03/2018", "18/03/2018", 33.717632, -116.340752);
+	Tournament tournament17 = Tournament("Miami Open presented by Itaú", "21/03/2018", "01/04/2018", 25.761681, -80.191788);
+	Tournament tournament18 = Tournament("Fayez Sarofim & Co. U.S. Men’s Clay Court Championship", "09/04/2018", "15/04/2018", 29.750851, -95.412285);
+	Tournament tournament19 = Tournament("Grand Prix Hassan II", "09/04/2018", "15/04/2018", 33.549156, -7.679191);
+	Tournament tournament20 = Tournament("Rolex Monte-Carlo Masters", "15/04/2018", "22/04/2018", 43.739723, 7.427222);
+	Tournament tournament21 = Tournament("Barcelona Open Banc Sabadell", "23/04/2018", "29/04/2018", 41.394382, 2.113115);
+	Tournament tournament22 = Tournament("Gazprom Hungarian Open", "23/04/2018", "29/04/2018", 47.497898, 19.040199);
+	Tournament tournament23 = Tournament("BMW Open by FWU", "30/04/2018", "06/05/2018", 48.176384, 11.610911);
+	Tournament tournament24 = Tournament("Millennium Estoril Open", "30/04/2018", "06/05/2018", 38.713314, -9.393656);
+	Tournament tournament25 = Tournament("TEB BNP Paribas Istanbul Open", "30/04/2018", "06/05/2018", 41.058697, 28.65859);
+	Tournament tournament26 = Tournament("Mutua Madrid Open", "06/05/2018", "13/05/2018", 40.416775, -3.70379);
+	Tournament tournament27 = Tournament("Internazionali BNL d’Italia", "13/05/2018", "20/05/2018", 41.902782, 12.496366);
+	Tournament tournament28 = Tournament("Banque Eric Sturdza Geneva Open", "20/05/2018", "26/05/2018", 46.177944, 6.117134);
+	Tournament tournament29 = Tournament("Open Parc Auvergne-Rhône-Alpes Lyon", "20/05/2018", "26/05/2018", 45.764, 4.8357);
+	Tournament tournament30 = Tournament("Mercedes Cup", "11/06/2018", "17/06/2018", 48.796021, 9.17085);
+	Tournament tournament31 = Tournament("Ricoh Open", "11/06/2018", "17/06/2018", 51.713955, 5.41455);
+	Tournament tournament32 = Tournament("Gerry Weber Open", "18/06/2018", "24/06/2018", 52.064152, 8.348773);
+	Tournament tournament33 = Tournament("The Queen's Club Championships", "18/06/2018", "24/06/2018", 51.488541, -0.212216);
+	Tournament tournament34 = Tournament("Antalya Open", "24/06/2018", "30/06/2018", 36.8969, 30.713301);
+	Tournament tournament35 = Tournament("International Eastbourne", "25/06/2018", "30/06/2018", 52.937965, -1.196363);
+	Tournament tournament36 = Tournament("Dell Technologies Hall of Fame Open", "16/07/2018", "22/07/2018", 41.482796, -71.308304);
+	Tournament tournament37 = Tournament("Plava Laguna Croatia Open Umag", "16/07/2018", "22/07/2018", 45.437206, 13.525721);
+	Tournament tournament38 = Tournament("SkiStar Swedish Open", "16/07/2018", "22/07/2018", 41.482796, -71.308304);
+	Tournament tournament39 = Tournament("German Tennis Championships 2018", "23/07/2018", "29/07/2018", 53.573212, 9.989125);
+	Tournament tournament40 = Tournament("BB&T Atlanta Open", "23/07/2018", "29/07/2018", 33.964455, -84.242424);
+	Tournament tournament41 = Tournament("J. Safra Sarasin Swiss Open Gstaad", "23/07/2018", "29/07/2018", 46.470684, 7.284474);
+	Tournament tournament42 = Tournament("Citi Open", "30/07/2018", "05/08/2018", 38.907192, -77.036873);
+	//Tournament tournament43 = Tournament("Abierto Mexicano de Tenis Mifel presentado por Cinemex", "30/07/2018", "04/08/2018", null, null);
+	Tournament tournament44 = Tournament("Generali Open", "30/07/2018", "04/08/2018", 47.444988, 12.39143);
+	Tournament tournament45 = Tournament("Rogers Cup", "06/08/2018", "12/08/2018", 45.50169, -73.567253);
+	Tournament tournament46 = Tournament("Western & Southern Open", "12/08/2018", "19/08/2018", 39.103119, -84.512016);
+	Tournament tournament47 = Tournament("Winston-Salem Open", "19/08/2018", "25/08/2018", 36.131966, -80.251999);
+	Tournament tournament48 = Tournament("St. Petersburg Open", "17/09/2018", "23/09/2018", 59.93428, 30.335098);
+	Tournament tournament49 = Tournament("Moselle Open", "17/09/2018", "23/09/2018", 49.109638, 6.183365);
+	Tournament tournament50 = Tournament("Chengdu Open", "24/09/2018", "30/09/2018", 30.5728, 104.066803);
+	Tournament tournament51 = Tournament("Shenzhen Open", "24/09/2018", "30/09/2018", 22.701385, 114.222923);
+	Tournament tournament52 = Tournament("China Open", "01/10/2018", "07/10/2018", 39.850529, 116.413353);
+	Tournament tournament53 = Tournament("Rakuten Japan Open Tennis Championships 2018", "01/10/2018", "07/10/2018", 35.689487, 139.691711);
+	Tournament tournament54 = Tournament("Rolex Shanghai Masters", "07/10/2018", "14/10/2018", 31.039904, 121.359024);
+	Tournament tournament55 = Tournament("VTB Kremlin Cup", "15/10/2018", "21/10/2018", 55.755825, 37.617298);
+	//Tournament tournament56 = Tournament("European Open", "15/10/2018", "21/10/2018", null, null);
+	Tournament tournament57 = Tournament("Intrum Stockholm Open", "15/10/2018", "21/10/2018", 59.350266, 18.095734);
+	Tournament tournament58 = Tournament("Erste Bank Open 500", "22/10/2018", "28/10/2018", 48.194382, 16.323515);
+	Tournament tournament59 = Tournament("Swiss Indoors Basel", "22/10/2018", "28/10/2018", 47.539898, 7.618258);
+	Tournament tournament60 = Tournament("Rolex Paris Masters", "29/10/2018", "04/11/2018", 48.838539, 2.378584);
+	Tournament tournament61 = Tournament("Qatar ExxonMobil Open", "31/12/2018", "05/01/2019", 25.291611, 51.530437);
+	Tournament tournament62 = Tournament("Brisbane International", "31/12/2018", "06/01/2019", -27.525463, 153.007507);
+	Tournament tournament63 = Tournament("Tata Open Maharashtra", "31/12/2018", "05/01/2019", 13.08268, 80.270721);
+	Tournament tournament64 = Tournament("Sydney International", "06/01/2019", "12/01/2019", -33.855042, 151.072342);
+	Tournament tournament65 = Tournament("ASB Classic", "07/01/2019", "12/01/2019", -36.848461, 174.763336);
+	Tournament tournament66 = Tournament("Cordoba Open", "04/02/2019", "10/02/2019", -31.368864, -64.246117);
+	Tournament tournament67 = Tournament("Open Sud de France", "04/02/2019", "10/02/2019", 43.573666, 3.952668);
+	Tournament tournament68 = Tournament("Sofia Open", "04/02/2019", "10/02/2019", 42.671425, 23.369343);
+	Tournament tournament69 = Tournament("ABN AMRO World Tennis Tournament", "11/02/2019", "17/02/2019", 51.883148, 4.488172);
+	Tournament tournament70 = Tournament("New York Open", "11/02/2019", "17/02/2019", 40.720299, -73.5877);
+	Tournament tournament71 = Tournament("Argentina Open", "11/02/2019", "17/02/2019", -34.67717, -58.446171);
+	Tournament tournament72 = Tournament("Rio Open presented by Claro", "18/02/2019", "24/02/2019", -21.763128, -41.303349);
+	Tournament tournament73 = Tournament("Open 13 Provence", "18/02/2019", "24/02/2019", 43.271729, 5.400124);
+	Tournament tournament74 = Tournament("Delray Beach Open by VITACOST.com", "18/02/2019", "24/02/2019", 26.462488, -80.075478);
+	Tournament tournament75 = Tournament("Dubai Duty Free Tennis Championships", "25/02/2019", "02/03/2019", 25.240028, 55.3503);
+	Tournament tournament76 = Tournament("Abierto Mexicano Telcel presentado por HSBC", "25/02/2019", "02/03/2019", 16.788414, -99.814034);
+	Tournament tournament77 = Tournament("Brasil Open", "25/02/2019", "03/03/2019", -23.55052, -46.633308);
+	Tournament tournament78 = Tournament("BNP Paribas Open", "07/03/2019", "17/03/2019", 33.717632, -116.340752);
+	Tournament tournament79 = Tournament("Miami Open presented by Itau", "20/03/2019", "31/03/2019", 25.761681, -80.191788);
+	Tournament tournament80 = Tournament("Fayez Sarofim & Co. U.S. Men's Clay Court Championship", "08/04/2019", "14/04/2019", 29.750851, -95.412285);
+	Tournament tournament81 = Tournament("Grand Prix Hassan II", "08/04/2019", "14/04/2019", 33.549156, -7.679191);
+	Tournament tournament82 = Tournament("Rolex Monte-Carlo Masters", "14/04/2019", "21/04/2019", 43.739723, 7.427222);
+	Tournament tournament83 = Tournament("Barcelona Open Banc Sabadell", "22/04/2019", "28/04/2019", 41.394382, 2.113115);
+	Tournament tournament84 = Tournament("Hungarian Open", "22/04/2019", "28/04/2019", 47.497898, 19.040199);
+	Tournament tournament85 = Tournament("BMW Open by FWU", "29/04/2019", "05/05/2019", 48.176384, 11.610911);
+	Tournament tournament86 = Tournament("Millennium Estoril Open", "29/04/2019", "05/05/2019", 38.713314, -9.393656);
+	Tournament tournament87 = Tournament("Mutua Madrid Open", "05/05/2019", "12/05/2019", 40.416775, -3.70379);
+	Tournament tournament88 = Tournament("Internazionali BNL d'Italia", "12/05/2019", "19/05/2019", 41.902782, 12.496366);
+	Tournament tournament89 = Tournament("Banque Eric Sturdza Geneva Open", "19/05/2019", "25/05/2019", 46.177944, 6.117134);
+	Tournament tournament90 = Tournament("Open Parc Auvergne-Rhone-Aipes Lyon", "19/05/2019", "25/05/2019", 45.764, 4.8357);
+	Tournament tournament91 = Tournament("MercedesCup", "10/06/2019", "16/06/2019", 48.796021, 9.17085);
+	Tournament tournament92 = Tournament("Libema Open", "10/06/2019", "16/06/2019", 51.713955, 5.41455);
+	Tournament tournament93 = Tournament("Fever-Tree Championships", "17/06/2019", "23/06/2019", 51.488541, -0.212216);
+	Tournament tournament94 = Tournament("Gerry Weber Open", "17/06/2019", "23/06/2019", 52.064152, 8.348773);
+	Tournament tournament95 = Tournament("Turkish Airlines Open Antalya", "23/06/2019", "29/06/2019", 36.8969, 30.713301);
+	Tournament tournament96 = Tournament("Nature Valley International", "24/06/2019", "29/06/2019", 52.937965, -1.196363);
+	Tournament tournament97 = Tournament("Hall of Fame Open", "15/07/2019", "21/07/2019", 41.482796, -71.308304);
+	Tournament tournament98 = Tournament("Plava Laguna Croatia Open Umag", "15/07/2019", "21/07/2019", 45.437206, 13.525721);
+	Tournament tournament99 = Tournament("Swedish Open", "15/07/2019", "21/07/2019", 41.482796, -71.308304);
+	Tournament tournament100 = Tournament("Hamburg Open", "22/07/2019", "28/07/2019", 53.573212, 9.989125);
+	Tournament tournament101 = Tournament("BB&T Atlanta Open", "22/07/2019", "28/07/2019", 33.964455, -84.242424);
+	Tournament tournament102 = Tournament("J.Safra Sarasin Swiss Open Gstaad", "22/07/2019", "28/07/2019", 46.470684, 7.284474);
+	Tournament tournament103 = Tournament("Citi Open", "29/07/2019", "04/08/2019", 38.907192, -77.036873);
+	Tournament tournament104 = Tournament("Abierto Mexicano de Tenis Mifel presentado por Cinemax", "29/07/2019", "03/08/2019", 22.911545, -109.893173);
+	Tournament tournament105 = Tournament("Generali Open", "29/07/2019", "03/08/2019", 47.444988, 12.39143);
+	Tournament tournament106 = Tournament("Coupe Rogers", "05/08/2019", "11/08/2019", 45.50169, -73.567253);
+	Tournament tournament107 = Tournament("Western & Southern Open", "11/08/2019", "18/08/2019", 39.103119, -84.512016);
+	Tournament tournament108 = Tournament("Winston-Salem Open", "18/08/2019", "24/08/2019", 36.131966, -80.251999);
+	Tournament tournament109 = Tournament("St. Petersburg Open", "16/09/2019", "22/09/2019", 59.93428, 30.335098);
+	Tournament tournament110 = Tournament("Moselle Open", "16/09/2019", "22/09/2019", 49.109638, 6.183365);
+	Tournament tournament111 = Tournament("Chengdu Open", "23/09/2019", "29/09/2019", 30.5728, 104.066803);
+	Tournament tournament112 = Tournament("Zhuhai Championships", "23/09/2019", "29/09/2019", 22.128036, 113.528854);
+	Tournament tournament113 = Tournament("China Open", "30/09/2019", "06/10/2019", 39.850529, 116.413353);
+	Tournament tournament114 = Tournament("Rakuten Japan Open Tennis Championships", "30/09/2019", "06/10/2019", 35.689487, 139.691711);
+	Tournament tournament115 = Tournament("Rolex Shanghai Masters", "06/10/2019", "13/10/2019", 31.039904, 121.359024);
+	Tournament tournament116 = Tournament("VTB Kremlin Cup", "14/10/2019", "20/10/2019", 55.755825, 37.617298);
+	Tournament tournament117 = Tournament("European Open", "14/10/2019", "20/10/2019", 51.230103, 4.441558);
+	Tournament tournament118 = Tournament("Intrum Stockholm Open", "14/10/2019", "20/10/2019", 59.350266, 18.095734);
+	Tournament tournament119 = Tournament("Erste Bank Open 500", "21/10/2019", "27/10/2019", 48.194382, 16.323515);
+	Tournament tournament120 = Tournament("Swiss Indoors Basel", "21/10/2019", "27/10/2019", 47.539898, 7.618258);
+	Tournament tournament121 = Tournament("Rolex Paris Masters", "28/10/2019", "03/11/2019", 48.838539, 2.378584);
+	*/
 
+	tournaments.push_back(tournament0);
 	tournaments.push_back(tournament1);
 	tournaments.push_back(tournament2);
 	tournaments.push_back(tournament3);
 	tournaments.push_back(tournament4);
+	/*
 	tournaments.push_back(tournament5);
-
-  TourCalculator tourcalculator = TourCalculator(tournaments);
-
-  Tour* tour = tourcalculator.calculate_region_tour_min_distance_max_tournaments();
-
-  print_tour(tour);
-
-  return 0;
-
-}
-
-void print_tour(Tour *tour) {
-
-	std::cout << "Best Tour:" << "\n";
-
-  std::cout << "\t" << "Weight: " << tour->total_weight << "\n";
-  std::cout << "\t" << "Nodes:"   << "\n";
-
-  std::list<Node*>::iterator it;
-
-  for (it = tour->nodes.begin(); it != tour->nodes.end(); ++it) {
-
-  	Node *node = *it;
-
-  	std::cout << "\t\t" << node->name << "\n";
-
-	}
+	tournaments.push_back(tournament6);
+	tournaments.push_back(tournament7);
+	tournaments.push_back(tournament8);
+	tournaments.push_back(tournament9);
+	tournaments.push_back(tournament10);
+	tournaments.push_back(tournament11);
+	tournaments.push_back(tournament12);
+	tournaments.push_back(tournament13);
+	tournaments.push_back(tournament14);
+	tournaments.push_back(tournament15);
+	tournaments.push_back(tournament16);
+	tournaments.push_back(tournament17);
+	tournaments.push_back(tournament18);
+	tournaments.push_back(tournament19);
+	tournaments.push_back(tournament20);
+	tournaments.push_back(tournament21);
+	tournaments.push_back(tournament22);
+	tournaments.push_back(tournament23);
+	tournaments.push_back(tournament24);
+	tournaments.push_back(tournament25);
+	tournaments.push_back(tournament26);
+	tournaments.push_back(tournament27);
+	tournaments.push_back(tournament28);
+	tournaments.push_back(tournament29);
+	tournaments.push_back(tournament30);
+	tournaments.push_back(tournament31);
+	tournaments.push_back(tournament32);
+	tournaments.push_back(tournament33);
+	tournaments.push_back(tournament34);
+	tournaments.push_back(tournament35);
+	tournaments.push_back(tournament36);
+	tournaments.push_back(tournament37);
+	tournaments.push_back(tournament38);
+	tournaments.push_back(tournament39);
+	tournaments.push_back(tournament40);
+	tournaments.push_back(tournament41);
+	tournaments.push_back(tournament42);
+	//tournaments.push_back(tournament43);
+	tournaments.push_back(tournament44);
+	tournaments.push_back(tournament45);
+	tournaments.push_back(tournament46);
+	tournaments.push_back(tournament47);
+	tournaments.push_back(tournament48);
+	tournaments.push_back(tournament49);
+	tournaments.push_back(tournament50);
+	tournaments.push_back(tournament51);
+	tournaments.push_back(tournament52);
+	tournaments.push_back(tournament53);
+	tournaments.push_back(tournament54);
+	tournaments.push_back(tournament55);
+	//tournaments.push_back(tournament56);
+	tournaments.push_back(tournament57);
+	tournaments.push_back(tournament58);
+	tournaments.push_back(tournament59);
+	tournaments.push_back(tournament60);
+	tournaments.push_back(tournament61);
+	tournaments.push_back(tournament62);
+	tournaments.push_back(tournament63);
+	tournaments.push_back(tournament64);
+	tournaments.push_back(tournament65);
+	tournaments.push_back(tournament66);
+	tournaments.push_back(tournament67);
+	tournaments.push_back(tournament68);
+	tournaments.push_back(tournament69);
+	tournaments.push_back(tournament70);
+	tournaments.push_back(tournament71);
+	tournaments.push_back(tournament72);
+	tournaments.push_back(tournament73);
+	tournaments.push_back(tournament74);
+	tournaments.push_back(tournament75);
+	tournaments.push_back(tournament76);
+	tournaments.push_back(tournament77);
+	tournaments.push_back(tournament78);
+	tournaments.push_back(tournament79);
+	tournaments.push_back(tournament80);
+	tournaments.push_back(tournament81);
+	tournaments.push_back(tournament82);
+	tournaments.push_back(tournament83);
+	tournaments.push_back(tournament84);
+	tournaments.push_back(tournament85);
+	tournaments.push_back(tournament86);
+	tournaments.push_back(tournament87);
+	tournaments.push_back(tournament88);
+	tournaments.push_back(tournament89);
+	tournaments.push_back(tournament90);
+	tournaments.push_back(tournament91);
+	tournaments.push_back(tournament92);
+	tournaments.push_back(tournament93);
+	tournaments.push_back(tournament94);
+	tournaments.push_back(tournament95);
+	tournaments.push_back(tournament96);
+	tournaments.push_back(tournament97);
+	tournaments.push_back(tournament98);
+	tournaments.push_back(tournament99);
+	tournaments.push_back(tournament100);
+	tournaments.push_back(tournament101);
+	tournaments.push_back(tournament102);
+	tournaments.push_back(tournament103);
+	tournaments.push_back(tournament104);
+	tournaments.push_back(tournament105);
+	tournaments.push_back(tournament106);
+	tournaments.push_back(tournament107);
+	tournaments.push_back(tournament108);
+	tournaments.push_back(tournament109);
+	tournaments.push_back(tournament110);
+	tournaments.push_back(tournament111);
+	tournaments.push_back(tournament112);
+	tournaments.push_back(tournament113);
+	tournaments.push_back(tournament114);
+	tournaments.push_back(tournament115);
+	tournaments.push_back(tournament116);
+	tournaments.push_back(tournament117);
+	tournaments.push_back(tournament118);
+	tournaments.push_back(tournament119);
+	tournaments.push_back(tournament120);
+	tournaments.push_back(tournament121);
+	*/
+	
+	TourCalculator* tourcalculator = new TourCalculator(tournaments, -33.854980, 151.072281);
+	
+	Tour* tour = tourcalculator->calculate_region_tour_min_distance_num_tournaments(3);
+	
+	print_tour(tour);
+	
+	delete tourcalculator;
+	delete tour;
+	
+	sleep(1000);
+	
+	return 0;
 
 }

@@ -28,6 +28,8 @@ TourCalculator::TourCalculator(std::list<Tournament> tournaments, double home_la
 
 TourCalculator::~TourCalculator() {
 
+  std::cout << "Deleted Tour Calculator\n";
+
   delete graph;
   if (homeExists) delete home;
   tournaments.clear();
@@ -61,7 +63,7 @@ make a new one with each of the nodes child nodes.
 
 */
 
-Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num_tournaments, bool start_from_home) {
+Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num_tournaments) {
 
   build_region_graph();
 
@@ -70,8 +72,8 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
 
   // Add all the tournaments as potential start tournaments
 
-  if (start_from_home) initialise_tours_list_from_home(&prev_tours);
-  else                 initialise_tours_list(&prev_tours);
+  if (homeExists) initialise_tours_list_from_home(&prev_tours);
+  else            initialise_tours_list(&prev_tours);
   
   // Find all potential multi-tournament tours
 
@@ -126,7 +128,7 @@ make a new one with each of the nodes child nodes.
 
 */
 
-Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments(bool start_from_home) {
+Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments() {
 
   build_region_graph();
 
@@ -135,8 +137,8 @@ Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments(bool st
 
   // Add all the tournaments as potential start tournaments
 
-  if (start_from_home) initialise_tours_list_from_home(&prev_tours);
-  else                 initialise_tours_list(&prev_tours);
+  if (homeExists) initialise_tours_list_from_home(&prev_tours);
+  else            initialise_tours_list(&prev_tours);
 
   // Find all potential multi-tournament tours
 
@@ -258,7 +260,7 @@ all other nodes where the start date occurs after the current node's end_date
 
 void TourCalculator::build_region_graph() {
 
-  for (auto const &tournament : tournaments) {
+  for (Tournament const &tournament : tournaments) {
 
     graph->add_node(&tournament);
   
