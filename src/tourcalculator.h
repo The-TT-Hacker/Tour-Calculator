@@ -57,9 +57,9 @@ class Tour {
 
 	public:
 
-	  std::list<Node> nodes;
-	  double          total_weight = 0;
-	  std::string     path;
+	  std::list<Node*> nodes;
+	  double           total_weight = 0;
+	  std::string      path;
 
 	  ~Tour();
 

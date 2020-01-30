@@ -10,7 +10,7 @@ double haversine_distance(const double lat1, const double lon1, const double lat
 
 Graph::~Graph() {
 
-	std::cout << "Deleted Graph\n";
+	//std::cout << "Deleted Graph\n";
 
 	nodes.clear();
 
@@ -97,7 +97,7 @@ Node::Node(const Tournament *tournament)
 
 Node::~Node() {
 
-	std::cout << "Deleted Node\n";
+	//std::cout << "Deleted Node\n";
 
 	edges.clear();
 

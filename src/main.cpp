@@ -13,9 +13,8 @@ int main () {
 	Tournament tournament0 = Tournament("Qatar ExxonMobil Open", "01/01/2018", "06/01/2018", 25.291611, 51.530437);
 	Tournament tournament1 = Tournament("Tata Open Maharashtra", "01/01/2018", "06/01/2018", 13.08268, 80.270721);
 	Tournament tournament2 = Tournament("Sydney International", "07/01/2018", "13/01/2018", -33.855042, 151.072342);
-	Tournament tournament3 = Tournament("ASB Classic", "08/01/2018", "13/01/2018", -36.848461, 174.763336);
-	Tournament tournament4 = Tournament("Ecuador Open", "05/02/2018", "11/02/2018", -0.180653, -78.467834);
-	/*
+	Tournament tournament3 = Tournament("ASB Classic", "14/01/2018", "17/01/2018", -36.848461, 174.763336);
+	Tournament tournament4 = Tournament("Ecuador Open", "14/02/2018", "17/02/2018", -0.180653, -78.467834);
 	Tournament tournament5 = Tournament("Open Sud de France", "05/02/2018", "11/02/2018", 43.573666, 3.952668);
 	Tournament tournament6 = Tournament("Sofia Open", "05/02/2018", "11/02/2018", 42.671425, 23.369343);
 	Tournament tournament7 = Tournament("ABN Amro World Tennis Tournament", "12/02/2018", "18/02/2018", 51.883148, 4.488172);
@@ -133,14 +132,12 @@ int main () {
 	Tournament tournament119 = Tournament("Erste Bank Open 500", "21/10/2019", "27/10/2019", 48.194382, 16.323515);
 	Tournament tournament120 = Tournament("Swiss Indoors Basel", "21/10/2019", "27/10/2019", 47.539898, 7.618258);
 	Tournament tournament121 = Tournament("Rolex Paris Masters", "28/10/2019", "03/11/2019", 48.838539, 2.378584);
-	*/
 
 	tournaments.push_back(tournament0);
 	tournaments.push_back(tournament1);
 	tournaments.push_back(tournament2);
 	tournaments.push_back(tournament3);
 	tournaments.push_back(tournament4);
-	/*
 	tournaments.push_back(tournament5);
 	tournaments.push_back(tournament6);
 	tournaments.push_back(tournament7);
@@ -258,10 +255,9 @@ int main () {
 	tournaments.push_back(tournament119);
 	tournaments.push_back(tournament120);
 	tournaments.push_back(tournament121);
-	*/
 	
 	TourCalculator* tourcalculator = new TourCalculator(tournaments, -33.854980, 151.072281);
-	
+
 	Tour* tour = tourcalculator->calculate_region_tour_min_distance_num_tournaments(3);
 	
 	print_tour(tour);
@@ -269,7 +265,7 @@ int main () {
 	delete tourcalculator;
 	delete tour;
 	
-	sleep(1000);
+	//sleep(1000);
 	
 	return 0;
 

@@ -86,11 +86,11 @@ void print_tour(Tour* tour) {
   std::cout << "\t" << "Path: "   << tour->path << "\n";
   std::cout << "\t" << "Nodes:"   << "\n";
 
-  std::list<Node>::iterator it;
+  std::list<Node*>::iterator it;
 
   for (it = tour->nodes.begin(); it != tour->nodes.end(); ++it) {
     
-    Node* node = &(*it);
+    Node* node = *it;
 
     std::cout << "\t\t" << node->name << "\n";
 
