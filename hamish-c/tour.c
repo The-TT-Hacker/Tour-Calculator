@@ -1,10 +1,12 @@
 #include "tourCalculator.h"
 
 
-/* create a new BestTour object. calculate length automatically */
-BestTour *newTour( Tournament *this, Tournament *next )
+/* create a new BestTour object */
+BestTour *newTour( Tournament *this, BestTour *next )
 {
-    ;
+    BestTour *b = malloc( sizeof( BestTour ) );
+    b->length = next->length + 1;
+    b->utility = -1;
 }
 
 /* traverse linked list of BestTours starting at *tournament, up to desired length */

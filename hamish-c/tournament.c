@@ -27,3 +27,27 @@ Tournament *nextValidTournament( Tournament *start )
     }
     return current;
 }
+
+/* return a pointer to a new tournament object */
+Tournament *createTournament( char *name, unsigned long date, unsigned int duration )
+{
+    Tournament *t = malloc( sizeof( Tournament ) );
+    strcpy( t->name, name );
+    t->date = date;
+    t->duration = duration;
+    t->next = NULL;
+    t->best = NULL;
+    return t;
+}
+
+/* detroy all tournaments after *start */
+void destroyTournaments( Tournament *start )
+{
+    if ( start->next != NULL ) {
+        destroyTournaments( start->next );
+    }
+    destroyBestTours( start->best );
+    free( start );
+    return;
+}
+                              
