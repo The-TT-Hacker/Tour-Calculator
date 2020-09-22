@@ -5,21 +5,37 @@
 BestTour *newTour( Tournament *this, BestTour *next )
 {
     BestTour *b = malloc( sizeof( BestTour ) );
-    b->length = next->length + 1;
-    b->utility = -1;
+
+    if ( next == NULL ) { 
+        b->length = 1;
+        b->viaHome = 1;
+        b->utility = calcUtility(b);
+    } else {
+        b->length = next->length + 1;
+        returnHome(b); /* decides whether to return home, populates viaHome and utility */
+    }
+
+    b->this = this;
+    b->next = next;
+    b->longerImpossible = 0;
+    b->longer = NULL;
+
+    return b;
 }
 
 /* traverse linked list of BestTours starting at *tournament, up to desired length */
-BestTour *bestTourOfLength( int n, Tournament *tournament )
+BestTour *bestTourFromTournament( int length, Tournament *tournament )
 {
     BestTour *currentBest = tournament->best;
+
     while ( currentBest != NULL ) {
-        if ( currentBest->length < n ) {
+        if ( currentBest->length < length ) {
             currentBest = currentBest->longer;
         } else {
             break;
         }
     }
+
     return currentBest;
 }
 
@@ -29,11 +45,12 @@ void printBestTour( BestTour *tour )
     if ( tour == NULL ) {
         return;
     }
+
     printf( "Tournament no. %d: %s\n", tour->length, tour->this->name );
-    if ( tour->length > 2 ) {
-        printBestTour( bestTourOfLength( tour->length - 1, tour->next ) );
+
+    if ( tour->length > 1 && tour->next != NULL ) {
+        printBestTour( tour->next );
     } else {
-        printf( "Tournament no. %d: %s\n", 1, tour->next->name );
         return;
     }
 }
@@ -44,8 +61,11 @@ BestTour *findBestTour( int length, Tournament *start )
     ;
 }
 
-/* return the tour with  */
-BestTour *maxUtility( BestTour *tourA, BestTour *tourB )
+void destroyTours( BestTour *tour )
 {
-    ;
+    if ( tour->longer != NULL ) {
+        destroyTours( tour->longer );
+    }
+    free( tour );
+    return;
 }

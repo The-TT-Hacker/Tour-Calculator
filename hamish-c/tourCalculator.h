@@ -22,6 +22,7 @@ cost.c
 tour.c
 - implement a BestTour generator
 - implement a recursive BestTour destructor
+- make the tournament struct more space efficient (use single bytes for flags)
 
 tournament.c
 - implement a Tournament generator 
@@ -49,29 +50,24 @@ typedef struct BestTour {
     double utility;
     struct Tournament *this; 
     struct BestTour *next;    /* next step in this tour */
+    short viaHome;            /* 1 if best to go home before *next */
+    short longerImpossible;   /* 1 if it is not possible for a longer tour to exist */
     struct BestTour *longer;  /* traverse linked list of BestTours from *this */
 } BestTour;
 
 
 
 /* tournament.c */
-/* detroy all tournaments after *start */
-void destroyTournaments( Tournament *start )
-
-/* find the next tournament chronologically that the player could play */
+void destroyTournaments( Tournament *start );
 Tournament *nextValidTournament( Tournament *start );
 
-
 /* tour.c */
-/* create a new BestTour object */
-BestTour *newTour( Tournament *this, BestTour *next )
-
-/* traverse linked list of BestTours up to desired length */
-BestTour *bestTourOfLength( int n, Tournament *tournament );
-
-/* recursively print an optimal tour */
-void printBestTour( BestTour *tour );
-
-/* get best tour of length length, starting anywhere from *start onwards */
+BestTour *newTour( Tournament *this, BestTour *next );
+BestTour *bestTourFromTounament( int length, Tournament *tournament );
 BestTour *findBestTour( int length, Tournament *start );
+void printBestTour( BestTour *tour );
+void destroyTours( BestTour *tour );
 
+/* utility.c */
+double calcUtility( BestTour *start );
+void returnHome( BestTour *b );

@@ -46,7 +46,7 @@ void destroyTournaments( Tournament *start )
     if ( start->next != NULL ) {
         destroyTournaments( start->next );
     }
-    destroyBestTours( start->best );
+    destroyTours( start->best );
     free( start );
     return;
 }
