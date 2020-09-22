@@ -63,8 +63,8 @@ Tournament *nextValidTournament( Tournament *start );
 
 /* tour.c */
 BestTour *newTour( Tournament *this, BestTour *next );
-BestTour *bestTourFromTounament( int length, Tournament *tournament );
-BestTour *findBestTour( int length, Tournament *start );
+BestTour *getTourOfLength( Tournament *tournament, int length );
+BestTour *findBestTour( Tournament *start, int length );
 void printBestTour( BestTour *tour );
 void destroyTours( BestTour *tour );
 
