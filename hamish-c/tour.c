@@ -73,13 +73,13 @@ BestTour *calcBestTourFromHere( Tournament *start, int length )
     BestTour *bestSoFar = getTourOfLength( start, length );
     if ( bestSoFar->length == length ) {
         return bestSoFar;
-    }
+    } 
     if ( bestSoFar->longerImpossible ) {
         return NULL;
     }
 
     if ( bestSoFar->length < length-1 ) {
-        bestSoFar = calcBestTourFromHere( start, bestSoFar->length+1 );
+        bestSoFar = calcBestTourFromHere( start, length-1 );
     }
 
     BestTour *next = highestUtility( nextValidTournament(start), bestSoFar->length );
