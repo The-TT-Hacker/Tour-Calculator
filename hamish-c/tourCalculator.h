@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+
+#define NAMESIZE 50
 
 /* 
 
@@ -38,7 +41,7 @@ tournament.c
 */
 
 typedef struct Tournament {
-    char name[50];
+    char name[NAMESIZE];
     unsigned long date;      /* unix timestamp */
     unsigned int duration;
     struct Tournament *next; /* traverse linked list chronologically from the start */
@@ -58,6 +61,7 @@ typedef struct BestTour {
 
 
 /* tournament.c */
+Tournament *createTournament( char *name, unsigned long date, unsigned int duration );
 void destroyTournaments( Tournament *start );
 Tournament *nextValidTournament( Tournament *start );
 
@@ -66,8 +70,12 @@ BestTour *newTour( Tournament *this, BestTour *next );
 BestTour *getTourOfLength( Tournament *tournament, int length );
 BestTour *findBestTour( Tournament *start, int length );
 void printBestTour( BestTour *tour );
+BestTour *highestUtility( Tournament *start, int length );
 void destroyTours( BestTour *tour );
 
 /* utility.c */
 double calcUtility( BestTour *start );
 void returnHome( BestTour *b );
+
+/* parsing.c */
+Tournament *getTournamentsFromCSV( char *filename );

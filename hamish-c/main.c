@@ -1,6 +1,7 @@
 #include "tourCalculator.h"
 
 
+Tournament *first;
 
 
 int main()
@@ -11,4 +12,6 @@ int main()
     free( testTournament );
     
     printf( "Current time is %lu\n", (unsigned long)time(NULL) );
+
+    getTournamentsFromCSV( "tournaments.csv" );
 }

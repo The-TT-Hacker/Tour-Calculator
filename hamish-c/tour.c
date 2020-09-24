@@ -63,7 +63,7 @@ BestTour *getTourOfLength( Tournament *tournament, int length )
         }
     }
 
-    return tournament;
+    return tournament->best;
 }
 
 /* return best tour of desired length, starting at *start, if one exists */
