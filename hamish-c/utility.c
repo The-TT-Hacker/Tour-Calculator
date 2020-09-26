@@ -3,7 +3,14 @@
 
 double calcUtility( BestTour *start )
 {
-    ;
+    /* for now we just say utility = duration */
+    if ( start == NULL ) {
+        return 0.0;
+    } else if ( start->utility == -1.0 ) {
+        return (double) start->this->duration + calcUtility( start->next );
+    } else {
+        return start->utility;
+    }
 }
 
 /* decide whether or not to return home after b->this */

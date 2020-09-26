@@ -21,8 +21,8 @@ char *getField( char *field, char *line, int n )
     }
 
     endField = startField;
-    while ( isalnum( *endField++ ) ) {
-        ;
+    while ( isalnum( *endField ) ) {
+        endField++;
     }
 
     if ( endField == startField ) { /*  */
@@ -60,25 +60,33 @@ Tournament *getTournamentsFromCSV( char *filename )
 {
     FILE *datafile = fopen( filename, "r" );
     char line[MAXLINE];
-    Tournament *start;
+    Tournament *start = NULL;
+    Tournament *current = NULL;
 
     char name[NAMESIZE];
     unsigned long date;
     unsigned int duration;
 
     while ( fgets( line, MAXLINE, datafile ) != NULL ) {
-
-        printf( "%s", line );
-
         if ( getName( name, line ) == NULL ) {
             return NULL;
         }
-        printf( "Tournament name: %s\n", name );
-
         date = getDate( line );
-        printf( "Tournament date: %u\n", date );
-
         duration = getDuration( line );
-        printf( "Tournament duration: %u\n\n", duration );
+
+        /* printf( "%s", line ); */
+        /* printf( "Tournament name: %s\n", name ); */
+        /* printf( "Tournament date: %u\n", date ); */
+        /* printf( "Tournament duration: %u\n\n", duration ); */
+
+        if ( start == NULL ) {
+            start = createTournament( name, date, duration );
+            current = start;
+        } else {
+            current->next = createTournament( name, date, duration );
+            current = current->next;
+        }
     }
+
+    return start;
 }

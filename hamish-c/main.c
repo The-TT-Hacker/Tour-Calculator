@@ -2,16 +2,15 @@
 
 
 Tournament *first;
-
+BestTour *best;
 
 int main()
 {
-    Tournament *testTournament = malloc( sizeof( Tournament ) );
-    strcpy( testTournament->name, "Very Cool Tournament" );
-    printf( "This tournament's name is %s\n", testTournament->name );
-    free( testTournament );
-    
-    printf( "Current time is %lu\n", (unsigned long)time(NULL) );
-
-    getTournamentsFromCSV( "tournaments.csv" );
+    first = getTournamentsFromCSV( "fakeTournaments.csv" );
+    best = highestUtility( first, 2 );
+    if ( best == NULL ) {
+        printf( "No tour possible with these parameters :(\n" );
+    }
+    printBestTour( best, 0 );
+    destroyTournaments( first );
 }

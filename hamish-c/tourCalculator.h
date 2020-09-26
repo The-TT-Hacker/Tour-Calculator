@@ -22,22 +22,6 @@ cost.c
   as one can be an automatic variable created for the sake of comparison,
   with its pointer never recorded anywhere
 
-tour.c
-- implement a BestTour generator
-- implement a recursive BestTour destructor
-- make the tournament struct more space efficient (use single bytes for flags)
-
-tournament.c
-- implement a Tournament generator 
-- implement a recursive tournament destructor
-
-
-- Define and implement a function to read tournament data in from a text file,
-  and generate the linked list in chronological order from this data, with 
-  sane initialisations for pointers.
-
-- Implement findBestTour()
-
 */
 
 typedef struct Tournament {
@@ -63,13 +47,13 @@ typedef struct BestTour {
 /* tournament.c */
 Tournament *createTournament( char *name, unsigned long date, unsigned int duration );
 void destroyTournaments( Tournament *start );
+void printAllTournaments( Tournament *this, int index );
 Tournament *nextValidTournament( Tournament *start );
 
 /* tour.c */
 BestTour *newTour( Tournament *this, BestTour *next );
 BestTour *getTourOfLength( Tournament *tournament, int length );
-BestTour *findBestTour( Tournament *start, int length );
-void printBestTour( BestTour *tour );
+void printBestTour( BestTour *tour, int index );
 BestTour *highestUtility( Tournament *start, int length );
 void destroyTours( BestTour *tour );
 
