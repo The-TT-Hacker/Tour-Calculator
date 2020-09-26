@@ -2,47 +2,58 @@
 
 #define MAXLINE 1000
 
-/* todo: get tours from CSV */
 
-/* copy tournament name (first CSV field) from line to name */
-/* return pointer to name, or NULL if no comma found        */
-char *getName( char *name, char *line )
+/* copy the nth comma separated field of line to field, add '\0' */
+char *getField( char *field, char *line, int n )
 {
-    memset( name, '\0', NAMESIZE );
-    char *comma = strchr( line, ',' );
-    if ( comma == NULL ) {
+    char *startField = line;
+    char *endField;
+    
+    for ( int i = 0 ; i < n ; i++ ) {
+        startField = strchr( startField, ',' );
+        if ( startField == NULL ) {
+            return NULL;
+        }
+        startField++;
+    }
+    while ( isspace(*startField) ) {
+        startField++;  /* skip whitespace */
+    }
+
+    endField = startField;
+    while ( isalnum( *endField++ ) ) {
+        ;
+    }
+
+    if ( endField == startField ) { /*  */
         return NULL;
     }
-    strncpy( name, line, (comma-line) );
+
+    strncpy( field, startField, (endField-startField) );
+    field[endField-startField] = '\0';
+    return field;
+}
+
+/* copy tournament name (first CSV field) from line to name 
+   return pointer to name, or NULL if no comma found        */
+char *getName( char *name, char *line )
+{
+    getField( name, line, 0 );
     return name;
 }
 
 unsigned long getDate( char *line )
 {
-    char *comma;
     char numstring[16];
-    comma = strchr( line, ',' );
-    if ( comma == NULL ) {
-        return 0;
-    }
-    comma++;
-    while ( isspace(*comma) ) {
-        comma++;
-    }
-    strncpy( numstring, comma, ( strchr( comma, ',' ) - comma ) );
+    getField( numstring, line, 1 );
     return strtoul( numstring, NULL, 10 );
 }
 
 unsigned int getDuration( char *line )
 {
-    char *comma;
-    for ( int i = 0 ; i < 2 ; i++ ) {
-        comma = strchr( line, ',' );
-        if ( comma == NULL ) {
-            return 0;
-        }
-        comma++;
-    }
+    char numstring[16];
+    getField( numstring, line, 2 );
+    return (unsigned int) atoi( numstring );
 }
 
 Tournament *getTournamentsFromCSV( char *filename )
@@ -56,10 +67,18 @@ Tournament *getTournamentsFromCSV( char *filename )
     unsigned int duration;
 
     while ( fgets( line, MAXLINE, datafile ) != NULL ) {
+
         printf( "%s", line );
-        getName( name, line );
+
+        if ( getName( name, line ) == NULL ) {
+            return NULL;
+        }
         printf( "Tournament name: %s\n", name );
+
         date = getDate( line );
         printf( "Tournament date: %u\n", date );
+
+        duration = getDuration( line );
+        printf( "Tournament duration: %u\n\n", duration );
     }
 }
