@@ -61,7 +61,7 @@ int main () {
 	Tournament tournament48 = Tournament("St. Petersburg Open", "17/09/2018", "23/09/2018", 59.93428, 30.335098);
 	Tournament tournament49 = Tournament("Moselle Open", "17/09/2018", "23/09/2018", 49.109638, 6.183365);
 	Tournament tournament50 = Tournament("Chengdu Open", "24/09/2018", "30/09/2018", 30.5728, 104.066803);
-	Tournament tournament51 = Tournament("Shenzhen Open", "24/09/2018", "30/09/2018", 22.701385, 114.222923);
+	/*Tournament tournament51 = Tournament("Shenzhen Open", "24/09/2018", "30/09/2018", 22.701385, 114.222923);
 	Tournament tournament52 = Tournament("China Open", "01/10/2018", "07/10/2018", 39.850529, 116.413353);
 	Tournament tournament53 = Tournament("Rakuten Japan Open Tennis Championships 2018", "01/10/2018", "07/10/2018", 35.689487, 139.691711);
 	Tournament tournament54 = Tournament("Rolex Shanghai Masters", "07/10/2018", "14/10/2018", 31.039904, 121.359024);
@@ -131,7 +131,7 @@ int main () {
 	Tournament tournament118 = Tournament("Intrum Stockholm Open", "14/10/2019", "20/10/2019", 59.350266, 18.095734);
 	Tournament tournament119 = Tournament("Erste Bank Open 500", "21/10/2019", "27/10/2019", 48.194382, 16.323515);
 	Tournament tournament120 = Tournament("Swiss Indoors Basel", "21/10/2019", "27/10/2019", 47.539898, 7.618258);
-	Tournament tournament121 = Tournament("Rolex Paris Masters", "28/10/2019", "03/11/2019", 48.838539, 2.378584);
+	Tournament tournament121 = Tournament("Rolex Paris Masters", "28/10/2019", "03/11/2019", 48.838539, 2.378584);*/
 
 	tournaments.push_back(tournament0);
 	tournaments.push_back(tournament1);
@@ -184,7 +184,7 @@ int main () {
 	tournaments.push_back(tournament48);
 	tournaments.push_back(tournament49);
 	tournaments.push_back(tournament50);
-	tournaments.push_back(tournament51);
+	/*tournaments.push_back(tournament51);
 	tournaments.push_back(tournament52);
 	tournaments.push_back(tournament53);
 	tournaments.push_back(tournament54);
@@ -254,16 +254,16 @@ int main () {
 	tournaments.push_back(tournament118);
 	tournaments.push_back(tournament119);
 	tournaments.push_back(tournament120);
-	tournaments.push_back(tournament121);
+	tournaments.push_back(tournament121);*/
 	
-	TourCalculator* tourcalculator = new TourCalculator(tournaments, -33.854980, 151.072281);
+	TourCalculator tourcalculator = TourCalculator(tournaments, -33.854980, 151.072281);
 
-	Tour* tour = tourcalculator->calculate_region_tour_min_distance_num_tournaments(3);
+	Tour tour = tourcalculator.calculate_region_tour_min_distance_num_tournaments(5);
 	
-	print_tour(tour);
+	print_tour(&tour);
 	
-	delete tourcalculator;
-	delete tour;
+	//delete tourcalculator;
+	//delete tour;
 	
 	//sleep(1000);
 	

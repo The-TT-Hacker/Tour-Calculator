@@ -63,7 +63,7 @@ make a new one with each of the nodes child nodes.
 
 */
 
-Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num_tournaments) {
+Tour TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num_tournaments) {
 
   build_region_graph();
 
@@ -84,14 +84,13 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
     get_next_tour_iteration(&prev_tours, &curr_tours);
 
     std::cout << "Iteration: " << (i + 1) << "; Num Tours: " << curr_tours.size() << "\n";
-
+    
     if (curr_tours.size() == 0) {
 
       break;
     
     } else {
-      
-      prev_tours.clear();
+
       prev_tours = curr_tours;
       curr_tours.clear();
     
@@ -99,10 +98,7 @@ Tour* TourCalculator::calculate_region_tour_min_distance_num_tournaments(int num
 
   }
 
-  Tour* best_tour = get_minimum_tour(&prev_tours);
-
-  prev_tours.clear();
-  curr_tours.clear();
+  Tour best_tour = get_minimum_tour(&prev_tours);
 
   return best_tour;
 
@@ -131,7 +127,7 @@ make a new one with each of the nodes child nodes.
 4. Loop through all tours in the previous tours list to find the one with the least combined weight/distance
 
 */
-
+/*
 Tour* TourCalculator::calculate_region_tour_min_distance_max_tournaments() {
 
   build_region_graph();
@@ -253,6 +249,8 @@ Tour* TourCalculator::calculate_return_home_tour_min_distance_max_tournaments() 
 
 }
 
+*/
+
 // Graph Builders
 
 /*
@@ -344,86 +342,54 @@ void TourCalculator::initialise_tours_list_from_home(std::list<Tour> *tours) {
 
 void TourCalculator::get_next_tour_iteration(std::list<Tour> *prev_tours, std::list<Tour> *curr_tours) {
 
-  std::list<Tour>::iterator it;
+  Node* last_node;
+  Tour  tour;
+  Edge* edge;
+  Tour  new_tour;
 
-  for (it = prev_tours->begin(); it != prev_tours->end(); ++it) {
+  while (prev_tours->size() > 0) {
 
-    Tour* tour      = &(*it);
-    Node* last_node = tour->nodes.back();
+    tour = prev_tours->back();
+    prev_tours->pop_back();
 
-    std::list<Edge>::iterator it2;
+    last_node = tour.nodes.back();
 
-    for (it2 = last_node->edges.begin(); it2 != last_node->edges.end(); ++it2) {
+    for (std::list<Edge>::iterator it = last_node->edges.begin(); it != last_node->edges.end(); ++it) {
     
-      Edge* edge     = &(*it2);
-      Tour  new_tour = tour->copy();
+      edge     = &(*it);
+      new_tour = Tour();
+
+      tour.copy(&new_tour);
 
       new_tour.add_node(edge->node, edge->weight);
       curr_tours->push_back(new_tour);
 
     }
-
   }
+}
 
-  prev_tours->clear();
+Tour TourCalculator::get_minimum_tour(std::list<Tour> *tours) {
 
-  while (prev_tours->size() > 0) {
+  Tour best_tour;
+  Tour curr_tour;
 
-    Tour tour = prev_tours->back();
-    prev_tours->pop_back();
+  best_tour = tours->back();
+  tours->pop_back();
 
-    Node* last_node = tour.nodes.back();
+  while (tours->size() > 0) {
 
-    std::list<Edge>::iterator it;
+    curr_tour = tours->back();
+    tours->pop_back();
 
-    for (it = last_node->edges.begin(); it != last_node->edges.end(); ++it) {
+    if (curr_tour.total_weight < best_tour.total_weight) {
+
+        best_tour = curr_tour;
     
-      Edge* edge     = &(*it);
-      Tour  new_tour = tour.copy();
-
-      new_tour.add_node(edge->node, edge->weight);
-      curr_tours->push_back(new_tour);
-
     }
   
   }
 
-}
-
-Tour* TourCalculator::get_minimum_tour(std::list<Tour> *tours) {
-
-  std::list<Tour>::iterator it = tours->begin();
-
-  Tour* best_tour = &(*it);
-
-  for (++it; it != tours->end(); ++it) {
-
-    Tour* tour = &(*it);
-
-    if (tour->total_weight < best_tour->total_weight) {
-
-        best_tour = tour;
-    
-    }
-
-  }
-
-  Tour* best_tour_copy = new Tour();
-
-  std::list<Node*>::iterator it2;
-
-  for (it2 = best_tour->nodes.begin(); it2 != best_tour->nodes.end(); ++it2) {
-    
-    Node* node = *it2;
-
-    best_tour_copy->nodes.push_back(node);
-
-  }
-
-  best_tour_copy->total_weight = best_tour->total_weight;
-  best_tour_copy->path         = best_tour->path;
-
-  return best_tour_copy;
+  return best_tour;
 
 }
 
@@ -449,9 +415,7 @@ void Tour::add_node(Node *node, double weight) {
 
 }
 
-Tour Tour::copy() {
-  
-  Tour new_tour = Tour();
+void Tour::copy(Tour* new_tour) {
 
   std::list<Node*>::iterator it;
 
@@ -459,13 +423,11 @@ Tour Tour::copy() {
     
     Node* node = *it;
 
-    new_tour.nodes.push_back(node);
+    new_tour->nodes.push_back(node);
 
   }
 
-  new_tour.total_weight = total_weight;
-  new_tour.path         = path;
-
-  return new_tour;
+  new_tour->total_weight = total_weight;
+  new_tour->path         = path;
 
 }

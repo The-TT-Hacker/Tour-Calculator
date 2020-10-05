@@ -22,7 +22,7 @@ var tournaments = [
 
 var num_tournaments = 3;
 
-console.log("Starting calculating all tours");
+console.log("1");
 
 /*
 tourcalculator.calculate_region_tour_min_distance_num_tournaments(tournaments, num_tournaments, function (tour) {
@@ -43,9 +43,15 @@ var tour = tourcalculator.calculate_region_tour_min_distance_max_tournaments_fro
 console.log(tour);
 */
 
+var i = 0;
+
 tourcalculator.calculate_region_tour_min_distance_num_tournaments_from_home(tournaments, num_tournaments, home, function (tour) {
 	console.log("calculate_region_tour_min_distance_num_tournaments_from_home");
 	console.log(tour);
+
+	console.log(i);
 });
 
-console.log("Started calculating all tours");
+i = 1
+
+console.log("2");
