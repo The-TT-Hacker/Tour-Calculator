@@ -43,7 +43,6 @@ typedef struct BestTour {
 } BestTour;
 
 
-
 /* tournament.c */
 Tournament *createTournament( char *name, unsigned long date, unsigned int duration );
 void destroyTournaments( Tournament *start );
@@ -63,3 +62,4 @@ void returnHome( BestTour *b );
 
 /* parsing.c */
 Tournament *getTournamentsFromCSV( char *filename );
+

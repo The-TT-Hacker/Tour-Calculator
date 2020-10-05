@@ -1,6 +1,5 @@
 #include "tourCalculator.h"
 
-
 /* create a new BestTour object */
 BestTour *newTour( Tournament *this, BestTour *next )
 {
@@ -41,7 +40,9 @@ void printBestTour( BestTour *tour, int index )
         return;
     }
 
-    printf( "Tournament no. %d: %s\n", index, tour->this->name );
+    printf( "Tournament no. %d: %s, starting at %d, ending at %d\n",
+            index, tour->this->name, tour->this->date,
+            (tour->this->date + tour->this->duration) );
 
     if ( tour->length > 1 && tour->next != NULL ) {
         printBestTour( tour->next, (index+1) );
@@ -74,6 +75,9 @@ BestTour *getTourOfLength( Tournament *tournament, int length )
 /* return NULL if impossible                                             */
 BestTour *calcBestTourFromHere( Tournament *start, int length )
 {
+    static int recursionCount;
+    /* printf( "number of calls to calcBestTourFromHere: %d\n", recursionCount++ ); */
+    
     BestTour *bestSoFar = getTourOfLength( start, length );
     if ( bestSoFar->length == length ) {
         return bestSoFar;
@@ -88,6 +92,9 @@ BestTour *calcBestTourFromHere( Tournament *start, int length )
             return NULL;
         }
     }
+
+    static int nonTrivialCount;
+    /* printf( "number of non-trivial calls to calcBestTourFromHere: %d\n", nonTrivialCount++ ); */
 
     BestTour *next = highestUtility( nextValidTournament(start), bestSoFar->length );
     if ( next != NULL ) {

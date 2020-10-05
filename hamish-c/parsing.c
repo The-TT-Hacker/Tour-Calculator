@@ -21,7 +21,7 @@ char *getField( char *field, char *line, int n )
     }
 
     endField = startField;
-    while ( isalnum( *endField ) ) {
+    while ( isprint(*endField) && *endField != ',' ) {
         endField++;
     }
 
